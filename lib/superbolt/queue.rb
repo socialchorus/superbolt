@@ -8,48 +8,17 @@ module Superbolt
     end
 
     def connection
-      @connection ||= Connection.new(config)
+      @connection ||= QueueConnection.new(name, config)
     end
 
-    def close
-      connection.close
-      @connection = nil
-      @q = nil
-    end
-
-    def closing(&block)
-      response = block.call
-      close
-      response
-    end
-
-    def q
-      @q ||= connection.queue(name, self.class.default_options)
-    end
-
-    def self.default_options
-      {
-        :auto_delete => false,
-        :durable => true,
-        :exclusive => false
-      }
-    end
-
-    delegate :exclusive?, :durable?, :auto_delete?,
-      to: :q
-
-    def writer
-      connection.exchange
-    end
+    delegate :close, :closing, :exclusive?, :durable?, :auto_delete?,
+      :writer, :channel, :q,
+        to: :connection
 
     def push(message)
       closing do
         writer.publish(message.to_json, routing_key: name)
       end
-    end
-
-    def channel
-      connection.channel
     end
 
     def size
@@ -63,6 +32,8 @@ module Superbolt
         q.purge
       end
     end
+
+    # TODO: roll up some of these subscribe methods
 
     def read
       messages = []
