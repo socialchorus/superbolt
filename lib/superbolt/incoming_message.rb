@@ -15,7 +15,7 @@ module Superbolt
     end
 
     def ack
-      channel.ack(tag)
+      channel.acknowledge(tag)
     end
   end
 end

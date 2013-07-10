@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Superbolt::Connection do
-  let(:connection) { Superbolt::Connection.new }
+describe Superbolt::Adapter::Bunny do
+  let(:connection) { Superbolt::Adapter::Bunny.new }
 
   it "has an underlying open connection via Bunny" do
     connection.socket.should be_a Bunny::Session

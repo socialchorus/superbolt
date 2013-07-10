@@ -8,7 +8,7 @@ module Superbolt
     end
 
     def connection
-      @connection ||= QueueConnection.new(name, config)
+      @connection ||= Connection::Queue.new(name, config)
     end
 
     delegate :close, :closing, :exclusive?, :durable?, :auto_delete?,
