@@ -17,10 +17,21 @@ module Superbolt
       @channel ||= socket.create_channel
     end
 
-    delegate :close, :closed?, :open, :open?,
+    delegate :closed?, :open, :open?,
       to: :socket
 
-    delegate :queues, :default_exchange, :acknowledge, :reject, :queue,
+    def close
+      response = socket.close
+      @channel = nil
+      @socket = nil
+      response
+    end
+
+    delegate :queues, :acknowledge, :reject, :queue,
       to: :channel
+
+    def exchange
+      channel.default_exchange
+    end
   end
 end
