@@ -7,7 +7,7 @@ module Superbolt
       @name = name
       @env = options[:env]
       @logger = options[:logger] || Logger.new($stdout)
-      @config = options[:config] || Config.new
+      @config = options[:config] || Superbolt.config
     end
 
     def name

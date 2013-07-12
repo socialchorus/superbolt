@@ -4,7 +4,7 @@ module Superbolt
 
     def initialize(name, config=nil)
       @name = name
-      @config = config || Config.new
+      @config = config || Superbolt.config
     end
 
     def connection

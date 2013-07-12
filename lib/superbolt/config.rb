@@ -21,5 +21,10 @@ module Superbolt
     def default
       options[:connection_params] || {host: '127.0.0.1'}
     end
+
+    def ==(other)
+      other.connection_params == connection_params &&
+        other.env_connection_key == env_connection_key
+    end
   end
 end
