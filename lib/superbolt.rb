@@ -17,5 +17,6 @@ require "superbolt/incoming_message"
 require "superbolt/app"
 require "superbolt/processor"
 require "superbolt/facade"
+require "superbolt/messenger"
 
 $stdout.sync = true

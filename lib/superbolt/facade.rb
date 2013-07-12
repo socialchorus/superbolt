@@ -10,4 +10,13 @@ module Superbolt
   def self.queue(name)
     Superbolt::Queue.new(name, config)
   end
+
+  class << self
+    attr_writer :env
+    attr_accessor :app_name
+  end
+
+  def self.env
+    @env || 'development'
+  end
 end
