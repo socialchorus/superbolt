@@ -62,7 +62,7 @@ describe Superbolt::App do
 
 
     it "passes a logger to the block" do
-      mock_logger = mock
+      mock_logger = double
       app.logger = mock_logger
 
       message_received = false
