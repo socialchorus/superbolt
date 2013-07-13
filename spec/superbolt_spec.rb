@@ -30,4 +30,26 @@ describe Superbolt, 'the facade' do
       Superbolt.queue('queue_name').should == queue
     end
   end
+
+  describe '.message' do
+    it "sends messages via the messenger system" do
+      queue = Superbolt.queue('activator_test')
+      queue.clear
+      Superbolt.env = 'test'
+      Superbolt.app_name = 'bossanova'
+
+      Superbolt.message
+        .to('activator')
+        .re('update')
+        .send!({class: 'Advocate'})
+
+      queue.pop.should == {
+        'origin' => 'bossanova',
+        'event' => 'update',
+        'arguments' => {
+          'class' => 'Advocate'
+        }
+      }
+    end
+  end
 end

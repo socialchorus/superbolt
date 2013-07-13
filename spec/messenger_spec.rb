@@ -47,7 +47,7 @@ describe Superbolt::Messenger do
     end
 
     it "passes event data to the message" do
-      messenger.event('zap')
+      messenger.re('zap')
       message[:event].should == 'zap'
     end
 
@@ -62,12 +62,11 @@ describe Superbolt::Messenger do
       messenger
         .to(name)
         .from('me')
-        .event('love')
-        .data('none')
+        .re('love')
     end
 
     it "returns a hash that gets sent to the right queue" do
-      messenger.send!
+      messenger.send!('none')
       queue.pop.should == {
         'origin' => 'me',
         'event' => 'love',

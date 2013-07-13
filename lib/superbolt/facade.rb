@@ -19,4 +19,8 @@ module Superbolt
   def self.env
     @env || 'development'
   end
+
+  def self.message(args={})
+    Superbolt::Messenger.new(args)
+  end
 end

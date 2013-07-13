@@ -1,11 +1,11 @@
 module Superbolt
   class Messenger
-    attr_accessor :origin, :name, :_event, :arguments, :env
+    attr_accessor :origin, :name, :event, :arguments, :env
 
     def initialize(options={})
       @name = options.delete(:to)
       @origin = options.delete(:from) || Superbolt.app_name
-      @_event = options.delete(:event) || self.class.default_event
+      @event = options.delete(:event) || self.class.defaultevent
       @env = Superbolt.env
       @arguments = options
     end
@@ -13,7 +13,7 @@ module Superbolt
     def message
       {
         origin: origin,
-        event: _event,
+        event: event,
         arguments: arguments
       }
     end
@@ -30,8 +30,8 @@ module Superbolt
       self
     end
 
-    def event(val)
-      self._event = val
+    def re(val)
+      self.event = val
       self
     end
 
@@ -43,7 +43,8 @@ module Superbolt
     # alias
     # -------
 
-    def send!
+    def send!(args=nil)
+      self.arguments = args if args
       queue.push(message)
     end
 
@@ -58,7 +59,7 @@ module Superbolt
       "#{name}_#{env}"
     end
 
-    def self.default_event
+    def self.defaultevent
       'default'
     end
   end
