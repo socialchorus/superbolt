@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Superbolt::VERSION
   spec.authors       = ["socialchorus"]
   spec.email         = ["developers@socialchorus.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Superbolt is comprised of a standalone app, and a queue-like queue for sending messages between services and applications.}
+  spec.summary       = %q{Superbolt is a gem that makes SOA intra-app communication easy, via RabbitMQ}
   spec.homepage      = ""
   spec.license       = "MIT"
 
