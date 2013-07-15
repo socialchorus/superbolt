@@ -3,7 +3,7 @@ module Superbolt
     attr_reader :config, :env
     attr_accessor :logger
 
-    def initialize(name, options)
+    def initialize(name, options={})
       @name = name
       @env = options[:env]
       @logger = options[:logger] || Logger.new($stdout)
