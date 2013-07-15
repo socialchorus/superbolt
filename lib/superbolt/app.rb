@@ -5,7 +5,7 @@ module Superbolt
 
     def initialize(name, options={})
       @name = name
-      @env = options[:env]
+      @env = options[:env] || Superbolt.env
       @logger = options[:logger] || Logger.new($stdout)
       @config = options[:config] || Superbolt.config
     end
