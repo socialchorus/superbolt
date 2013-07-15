@@ -25,10 +25,10 @@ queue. It can clear itself. In short it makes inline operations doable.
 
 The app on the other hand is an EventMachine process that takes over the
 thread. It continually reads from a single queue until it recieves a
-signal shutting it down. It is smart; it won't remove messages from the
-queue if an exception is raised, and it listens on a separate quit queue
-for a graceful shutdown. All of this means that deploying and crashes
-can be done without loosing valuable messages. 
+signal or message shutting it down. It is smart; it handles exceptions in message
+processing by moving those problem messages to a related error queue. It also
+listens on a separate quit queue for a graceful shutdown. A graceful
+shutdown means no messages are lost.
 
 #### Simple because there are less RabbitMQ capabilities
 
@@ -215,9 +215,23 @@ communications.
       HomewardBound.new(message).perform
     end
 
-Exceptions raised in the HomewardBound class above will not kill/exit
-the Superbolt app. Errors will be logged and the message will be left on
-the queue for future processing.
+Exceptions raised in the processing block will not exit
+the Superbolt app. Errors will be logged and the message will be put on
+an error queue with information about the exception raised. Those
+messages can be seen by accessing the related error queue:
+
+    error_queue = Superbolt::App.new('dorothy_inbox').error_queue
+    error_queue.all
+
+The error queue is a Superbolt::Queue and methods like #pop, #delete,
+and #[] are available to gather more data about the exceptions being
+raised.
+
+The app can be shutdown gracefully by sending a quit message to a
+special queue:
+
+    quit_queue = Superbolt::App.new('dorothy_inbox').quit_queue
+    quit_queue.push(message: 'for a deploy')
 
 ## Installation
 
@@ -236,8 +250,6 @@ Or install it yourself as:
 ## TODOs:
 
 * Easy filtering/delegation of messages to classes
-* Messages are rejected on failure in the App to avoid multi-processing.
-  This is in contrast to not acknowleging until completion.
 * Failed messages are put on another queue so that the app is not
   in a failure loop.
 * In code YARD stye documentation

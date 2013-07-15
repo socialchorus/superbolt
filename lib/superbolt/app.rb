@@ -26,23 +26,41 @@ module Superbolt
       connection.q
     end
 
-    def quit_queue
+    def quit_subscriber_queue
       connection.qq
+    end
+
+    def quit_queue
+      Queue.new("#{connection.name}.quit", connection.config)
+    end
+
+    def error_queue
+      Queue.new("#{connection.name}.error", connection.config)
     end
 
     def run(&block)
       EventMachine.run do
-        queue.subscribe(ack: true) do |metadata, payload|
+        queue.subscribe(ack: false) do |metadata, payload|
           message = IncomingMessage.new(metadata, payload, channel)
-          if Processor.new(message, logger, &block).perform
-            message.ack
+          processor = Processor.new(message, logger, &block)
+          unless processor.perform
+            on_error(message.parse, processor.exception)
           end
         end
 
-        quit_queue.subscribe do |message|
+        quit_subscriber_queue.subscribe do |message|
           quit(message)
         end
       end
+    end
+
+    def on_error(message, error)
+      error_message = message.merge({error: {
+        class: error.class,
+        message: error.message,
+        backtrace: error.backtrace
+      }})
+      error_queue.push(error_message)
     end
 
     def quit(message='no message given')

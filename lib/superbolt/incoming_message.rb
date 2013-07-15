@@ -14,6 +14,10 @@ module Superbolt
       payload
     end
 
+    def reject
+      channel.reject(tag)
+    end
+
     def ack
       channel.acknowledge(tag)
     end

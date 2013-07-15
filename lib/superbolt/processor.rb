@@ -1,7 +1,7 @@
 module Superbolt
   class Processor
     attr_reader :message, :logger, :block
-    attr_accessor  :start_time
+    attr_accessor  :start_time, :exception
 
     def initialize(message, logger, &block)
       @message = message
@@ -15,6 +15,7 @@ module Superbolt
       finish!
       true
     rescue Exception => e
+      self.exception = e
       logger.error("#{e.message}\n#{e.backtrace}")
       false
     end

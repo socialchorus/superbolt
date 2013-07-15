@@ -10,14 +10,15 @@ describe Superbolt::App do
                          logger: logger
                        })
                     }
-  let(:queue)       { Superbolt::Queue.new("#{name}_test") }
-  let(:quit_queue)  { Superbolt::Queue.new("#{name}_test.quit") }
+  let(:queue)       { Superbolt::Queue.new("#{name}_#{env}") }
+  let(:quit_queue)  { Superbolt::Queue.new("#{name}_#{env}.quit") }
+  let(:error_queue) { Superbolt::Queue.new("#{name}_#{env}.error") }
   let(:messages)    { [] }
 
   before do
     queue.clear
-    messages.clear
     quit_queue.clear
+    error_queue.clear
   end
 
   describe '#run' do
@@ -82,7 +83,7 @@ describe Superbolt::App do
       message_received.should be_true
     end
 
-    it "leaves the message on the queue if an error occurs in processing" do
+    it "moves the message to an error queue if an exception is raised" do
       queue.push({oh: 'noes'})
 
       app.run do |message|
@@ -90,7 +91,8 @@ describe Superbolt::App do
         raise "something went wrong"
       end
 
-      queue.size.should == 1
+      queue.size.should == 0
+      error_queue.size.should == 1
     end
   end
 end
