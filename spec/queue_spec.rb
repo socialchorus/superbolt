@@ -117,4 +117,17 @@ describe 'Superbolt::Queue' do
       end
     end
   end
+
+  describe 'errors cases' do
+    let(:new_queue) { Superbolt::Queue.new("random.name.#{rand(1_000_000)}") }
+
+    after do
+      new_queue.clear
+    end
+
+    it "should store messages to a queue, even when writing before declaring the queue" do
+      new_queue.push({my: 'message'})
+      new_queue.size.should == 1
+    end
+  end
 end
