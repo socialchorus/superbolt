@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/socialchorus/superbolt.png)](https://codeclimate.com/github/socialchorus/superbolt)
+
 # Superbolt
 
 Superbolt is an easy intra-app communication system for sending messages
