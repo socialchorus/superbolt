@@ -20,23 +20,25 @@ module Superbolt
 
     # chainer methods
     #
-    def to(val)
-      self.name = val
-      self
+    def to(val=nil)
+      attr_chainer(:name, val)
     end
 
-    def from(val)
-      self.origin = val
-      self
+    def from(val=nil)
+      attr_chainer(:origin, val)
     end
 
-    def re(val)
-      self.event = val
-      self
+    def re(val=nil)
+      attr_chainer(:event, val)
     end
 
-    def data(val)
-      self.arguments = val
+    def data(val=nil)
+      attr_chainer(:arguments, val)
+    end
+
+    def attr_chainer(attr, val)
+      return send(attr) unless val
+      self.send("#{attr}=", val)
       self
     end
 

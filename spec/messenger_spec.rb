@@ -35,25 +35,49 @@ describe Superbolt::Messenger do
   describe 'underlying message' do
     let(:message) { messenger.message }
 
-    it "starts its life with no interesting values" do
-      message[:origin].should == nil
-      message[:event].should == 'default'
-      message[:arguments].should == {}
+    context 'writing' do
+      it "starts its life with no interesting values" do
+        message[:origin].should == nil
+        message[:event].should == 'default'
+        message[:arguments].should == {}
+      end
+
+      it "calls to #from, set the origin on the message" do
+        messenger.from('linkticounter')
+        message[:origin].should == 'linkticounter'
+      end
+
+      it "passes event data to the message" do
+        messenger.re('zap')
+        message[:event].should == 'zap'
+      end
+
+      it "passes data to the message" do
+        messenger.data({foo: 'bar'})
+        message[:arguments].should == {foo: 'bar'}
+      end
     end
 
-    it "calls to #from, set the origin on the message" do
-      messenger.from('linkticounter')
-      message[:origin].should == 'linkticounter'
-    end
+    context 'reading' do
+      it '#to returns the name' do
+        messenger.to('transducer')
+        messenger.to.should == 'transducer'
+      end
 
-    it "passes event data to the message" do
-      messenger.re('zap')
-      message[:event].should == 'zap'
-    end
+      it '#from returns the origin' do
+        messenger.from('activator')
+        messenger.fromq.should == 'activator'
+      end
 
-    it "passes data to the message" do
-      messenger.data({foo: 'bar'})
-      message[:arguments].should == {foo: 'bar'}
+      it '#re returns the event' do
+        messenger.re('save')
+        messenger.re.should == 'save'
+      end
+
+      it '#data return the arguments' do
+        messenger.data({foo: 'bar'})
+        messenger.data.should == {foo: 'bar'}
+      end
     end
   end
 

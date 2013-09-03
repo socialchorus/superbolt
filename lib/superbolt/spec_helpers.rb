@@ -4,7 +4,8 @@ module Superbolt
       return @superbolt_message if @superbolt_message
 
       @superbolt_message = Superbolt::Messenger.new
-      @superbolt_message.stub(:send!) do |m|
+      @superbolt_message.stub(:send!) do |args|
+        @superbolt_message.data(args)
         superbolt_messages << @superbolt_message
       end
 
