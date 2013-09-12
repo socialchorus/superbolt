@@ -2,7 +2,7 @@ module Superbolt
   module Connection
     class App < Base
       def connection
-        @connection ||= Adapter::AMQP.new(config)
+        @connection ||= Adapter::Bunny.new(config)
       end
 
       def close(&block)

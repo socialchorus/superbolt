@@ -40,7 +40,7 @@ module Superbolt
 
     def run(&block)
       EventMachine.run do
-        queue.subscribe(ack: false) do |metadata, payload|
+        queue.subscribe(ack: true) do |metadata, properties,  payload|
           message = IncomingMessage.new(metadata, payload, channel)
           processor = Processor.new(message, logger, &block)
           unless processor.perform
@@ -52,6 +52,11 @@ module Superbolt
           quit(message)
         end
       end
+    end
+
+    def reconnect_and_run(&block)
+      @connection = Connection::App.new(name, config)
+      run(&block)
     end
 
     def on_error(message, error)

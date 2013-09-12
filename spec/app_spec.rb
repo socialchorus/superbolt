@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Superbolt::App do
   let(:env)         { 'test' }
   let(:name)        { 'superbolt' }
-  let(:logger)      { Logger.new('/dev/null') }
+  let(:logger)      { Logger.new("/dev/null") }
   let(:app)         {
                        Superbolt::App.new(name, {
                          env: env,
@@ -23,14 +23,17 @@ describe Superbolt::App do
 
   describe '#run' do
     it "shuts down with any message to the quit queue" do
+      puts 'pushing so hard'
       queue.push({please: 'stop'})
-
+      puts 'about to run'
       app.run do |arguments|
+        puts "RUN!!!!!!!!"
         quit_queue.push({message: 'just because'})
+        puts 'pushed to quit_queue'
       end
-
-      queue.size.should == 0
-      quit_queue.size.should == 0
+      #puts "done running, tired here da queue message_count #{queue.status}"
+      #queue.message_count.should == 0
+      #quit_queue.message_count.should == 0
     end
 
     it 'passes messages to the block for processing' do
@@ -42,7 +45,7 @@ describe Superbolt::App do
         quit_queue.push({message: 'quit'}) if message['last']
       end
 
-      messages.size.should == 2
+      messages.message_count.should == 2
       messages.should == [
         {'first' => 1},
         {'last' => 2}
@@ -58,7 +61,7 @@ describe Superbolt::App do
         quit_queue.push({message: 'quit'}) if message['last']
       end
 
-      queue.size.should == 0
+      queue.message_count.should == 0
     end
 
 
@@ -91,8 +94,8 @@ describe Superbolt::App do
         raise "something went wrong"
       end
 
-      queue.size.should == 0
-      error_queue.size.should == 1
+      queue.message_count.should == 0
+      error_queue.message_count.should == 1
     end
   end
 end
