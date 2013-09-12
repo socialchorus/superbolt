@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Superbolt::App do
   let(:env)         { 'test' }
   let(:name)        { 'superbolt' }
-  let(:logger)      { Logger.new('/dev/null') }
+  let(:logger)      { Logger.new("/dev/null") }
   let(:app)         {
                        Superbolt::App.new(name, {
                          env: env,
@@ -24,7 +24,6 @@ describe Superbolt::App do
   describe '#run' do
     it "shuts down with any message to the quit queue" do
       queue.push({please: 'stop'})
-
       app.run do |arguments|
         quit_queue.push({message: 'just because'})
       end

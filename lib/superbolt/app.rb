@@ -40,7 +40,7 @@ module Superbolt
 
     def run(&block)
       EventMachine.run do
-        queue.subscribe(ack: false) do |metadata, payload|
+        queue.subscribe(ack: false) do |metadata, properties,  payload|
           message = IncomingMessage.new(metadata, payload, channel)
           processor = Processor.new(message, logger, &block)
           unless processor.perform
@@ -48,8 +48,9 @@ module Superbolt
           end
         end
 
-        quit_subscriber_queue.subscribe do |message|
-          quit(message)
+        quit_subscriber_queue.subscribe do |metadata, properties, payload|
+          parsed_payload = JSON.parse(payload)
+          quit(parsed_payload['message'])
         end
       end
     end
@@ -66,7 +67,7 @@ module Superbolt
     def quit(message='no message given')
       logger.info "EXITING Superbolt App listening on queue #{name}: #{message}"
       close {
-        EventMachine.stop { exit }
+        EventMachine.stop
       }
     end
   end
