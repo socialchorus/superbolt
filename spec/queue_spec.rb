@@ -119,7 +119,8 @@ describe 'Superbolt::Queue' do
   end
 
   describe 'errors cases' do
-    let(:new_queue) { Superbolt::Queue.new("random.name.#{rand(1_000_000)}") }
+    let(:new_queue) { Superbolt::Queue.new("superbolt_test") }
+    #{rand(1_000_000)}
 
     after do
       new_queue.clear

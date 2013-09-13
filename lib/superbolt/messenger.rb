@@ -1,6 +1,6 @@
 module Superbolt
   class Messenger
-    attr_accessor :origin, :name, :event, :arguments, :env
+    attr_accessor :origin, :name, :event, :arguments, :env, :retry_time, :timeout
 
     def initialize(options={})
       @name = options.delete(:to)
@@ -8,6 +8,8 @@ module Superbolt
       @event = options.delete(:event) || self.class.defaultevent
       @env = Superbolt.env
       @arguments = options
+      @retry_time = Superbolt.config.options[:retry_time] || 10
+      @timeout = Superbolt.config.options[:timeout] || 60
     end
 
     def message
@@ -36,6 +38,14 @@ module Superbolt
       attr_chainer(:arguments, val)
     end
 
+    def retry_after(val=nil)
+      attr_chainer(:retry_time, val)
+    end
+
+    def timeout_after(val=nil)
+      attr_chainer(:timeout, val)
+    end
+
     def attr_chainer(attr, val)
       return send(attr) unless val
       self.send("#{attr}=", val)
@@ -47,6 +57,10 @@ module Superbolt
 
     def send!(args=nil)
       self.arguments = args if args
+      MessageRam.new(self, 'push_to_queue').besiege
+    end
+
+    def push_to_queue
       queue.push(message)
     end
 
