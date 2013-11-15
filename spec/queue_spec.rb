@@ -22,11 +22,13 @@ describe 'Superbolt::Queue' do
 
   describe 'queue/array operations' do
     let(:message) { {hello: 'insomniacs'} }
+    let(:message_two) { {:hello => 'early birds'} }
     let(:decoded) { {'hello' => 'insomniacs'} }
+    let(:decoded_two) { {'hello' => 'early birds'} }
 
     describe '#push' do
       let(:bunny_queue) {connection.queue(name, Superbolt::Queue.default_options)}
-      
+
       it "writes to the queue" do
         queue.push(message)
         queue.size.should == 1
@@ -37,7 +39,7 @@ describe 'Superbolt::Queue' do
       it "returns the message but leaves it in the queue" do
         queue.push(message)
         queue.peek.should == decoded
-        queue.size.should == 1 
+        queue.size.should == 1
       end
     end
 
@@ -46,6 +48,14 @@ describe 'Superbolt::Queue' do
         queue.push(message)
         queue.pop.should == decoded
         queue.size.should == 0
+      end
+
+      it "leaves all other messages in the queue" do
+        queue.push(message)
+        queue.push(message_two)
+        queue.pop
+        queue.size.should == 1
+        queue.all.should include(decoded_two)
       end
     end
 

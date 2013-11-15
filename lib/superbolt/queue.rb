@@ -55,17 +55,12 @@ module Superbolt
     end
 
     def pop
-      messages = []
       closing do
-        popped = false
-        q.subscribe(:ack => false) do |delivery_info, metadata, message|
-          next if popped
-          messages << IncomingMessage.new(delivery_info, message, channel)
-          popped = true
+        q.pop do |delivery_info, metadata, message|
+          message = IncomingMessage.new(delivery_info, message, channel)
+          message && message.parse
         end
       end
-      message = messages.first
-      message && message.parse
     end
 
     delegate :slice, :[],
