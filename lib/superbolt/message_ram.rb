@@ -16,6 +16,7 @@ module Superbolt
       puts "Continuing the siege in #{messenger.retry_time} seconds...\n"
       sleep(messenger.retry_time)
       retreat(e) if retreat?
+      messenger.queue.close
       besiege
     end
 
