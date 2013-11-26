@@ -7,7 +7,8 @@ describe Superbolt::MessageRam do
     timeout: 5,
     live_queue: double('queue', close: true)
   )}
-  let(:ram) { Superbolt::MessageRam.new(messenger, :some_method ) }
+  let(:stdout) { StringIO.new('') }
+  let(:ram) { Superbolt::MessageRam.new(messenger, :some_method, stdout) }
 
   before do
     messenger.should_receive(:some_method).ordered.and_raise('Some Error')
@@ -15,9 +16,9 @@ describe Superbolt::MessageRam do
 
   context "failed to open connection" do
     before do
-      expect(messenger)
-      .to receive(:some_method).ordered
-          .and_return(true)
+      expect(messenger).to receive(:some_method)
+        .ordered
+        .and_return(true)
     end
 
     it 'should raise no errors' do
@@ -29,12 +30,18 @@ describe Superbolt::MessageRam do
     it "retries on a configured interval" do
       ram.besiege.should == true
     end
+
+    it "reports the errors" do
+      ram.besiege
+      stdout.string.should match(/Something went wrong/)
+    end
   end
 
   context 'it runs out of time' do
     before do
       ram.run_time = 6
     end
+
     it 'should raise error' do
       expect {
         ram.besiege
