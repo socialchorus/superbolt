@@ -5,7 +5,7 @@ describe Superbolt::MessageRam do
   let(:messenger) { double(
     retry_time: 1,
     timeout: 5,
-    queue: double('queue', close: true)
+    live_queue: double('queue', close: true)
   )}
   let(:ram) { Superbolt::MessageRam.new(messenger, :some_method ) }
 

@@ -1,6 +1,6 @@
 module Superbolt
   class Messenger
-    attr_accessor :origin, :name, :event, :arguments, :env, :retry_time, :timeout
+    attr_accessor :origin, :name, :event, :arguments, :env, :retry_time, :timeout, :live_queue
 
     def initialize(options={})
       @name = options.delete(:to)
@@ -68,7 +68,7 @@ module Superbolt
       unless name
         raise "no destination app name defined, please pass one in"
       end
-      Queue.new(destination_name)
+      @live_queue = Queue.new(destination_name)
     end
 
     def destination_name
