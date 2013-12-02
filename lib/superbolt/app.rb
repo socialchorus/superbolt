@@ -19,7 +19,7 @@ module Superbolt
     end
 
     delegate :close, :closing, :exclusive?, :durable?, :auto_delete?,
-      :writer, :channel, :q,
+      :channel, :q,
         to: :connection
 
     def queue

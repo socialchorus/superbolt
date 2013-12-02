@@ -8,8 +8,12 @@ module Superbolt
         @socket
       end
 
-      def channel
-        @channel ||= socket.create_channel
+      def new_channel
+        socket.create_channel
+      end
+
+      def channel=(new_channel)
+        @channel = new_channel
       end
     end
   end

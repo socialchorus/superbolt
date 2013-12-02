@@ -1,4 +1,5 @@
 module Superbolt
+  
   def self.config=(options)
     @config = Config.new(options)
   end
@@ -23,4 +24,5 @@ module Superbolt
   def self.message(args={})
     Superbolt::Messenger.new(args)
   end
+  CONNECTION = Adapter::Bunny.new(config)
 end

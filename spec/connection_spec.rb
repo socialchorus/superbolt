@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Superbolt::Adapter::Bunny do
   let(:connection) { Superbolt::Adapter::Bunny.new }
+  let(:channel) { connection.new_channel }
 
   it "has an underlying open connection via Bunny" do
     connection.socket.should be_a Bunny::Session
@@ -9,13 +10,15 @@ describe Superbolt::Adapter::Bunny do
     connection.should be_open
   end
 
-  it "has a channel" do
-    connection.channel.should be_a Bunny::Channel
+  describe 'new_channel' do
+    it "creates a channel" do
+      connection.new_channel.should be_a Bunny::Channel
+    end
   end
 
   it "delegates queue creation to the channel" do
-    queue = connection.queue('changelica')
+    queue = channel.queue('changelica')
     queue.should be_a Bunny::Queue
-    connection.queues.keys.should include('changelica')
+    channel.queues.keys.should include('changelica')
   end
 end

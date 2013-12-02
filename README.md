@@ -4,7 +4,7 @@
 
 Superbolt is an easy intra-app communication system for sending messages
 between applications. It is backed by RabbitMQ and under the covers it
-uses both the Bunny gem and the AMQP gem.
+uses the Bunny gem.
 
 #### Why not just use those gems?
 

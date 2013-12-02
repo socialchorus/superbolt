@@ -12,35 +12,35 @@ module Superbolt
     end
 
     delegate :close, :closing, :exclusive?, :durable?, :auto_delete?,
-      :writer, :channel, :q,
-        to: :connection
+    :channel, :q,
+    to: :connection
 
     def push(message)
       closing do
-        writer.publish(message.to_json, routing_key: name)
+        q.publish(message.to_json)
       end
     end
 
     def size
-      closing do
-        q.message_count
-      end
+      q.message_count
     end
 
     def clear
-      closing do
-        q.purge
-      end
+      q.purge
     end
 
     # TODO: roll up some of these subscribe methods
 
     def read
+      current_size = size
       messages = []
       closing do
         q.subscribe(:ack => true) do |delivery_info, metadata, payload|
           message = IncomingMessage.new(delivery_info, payload, channel)
           messages << message
+        end
+        while messages.length < current_size
+          true  
         end
       end
       messages
@@ -51,20 +51,22 @@ module Superbolt
     end
 
     def peek
-      all.first
+      message = pop
+      push(message)
+      message
     end
 
     def pop
       closing do
-        q.pop do |delivery_info, metadata, message|
-          message = IncomingMessage.new(delivery_info, message, channel)
+        q.pop(ack: false) do |delivery_info, metadata, payload|
+          message = IncomingMessage.new(delivery_info, payload, channel) if payload
           message && message.parse
         end
       end
     end
 
     delegate :slice, :[],
-      to: :all
+    to: :all
 
     def delete
       messages = []
@@ -77,11 +79,11 @@ module Superbolt
             message.ack
           end
         end
-
         # channel is closed by block before message ack can complete
         # therefore we must sleep :(
         sleep 0.02
       end
+
       messages
     end
   end

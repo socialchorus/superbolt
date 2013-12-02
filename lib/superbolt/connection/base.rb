@@ -17,16 +17,16 @@ module Superbolt
       end
 
       def q
-        @q ||= connection.queue(name, self.class.default_options)
+        @q ||= channel.queue(name, self.class.default_options)
       end
 
       delegate :exclusive?, :durable?, :auto_delete?,
         to: :q
 
       def channel
-        connection.channel
+        @channel ||= connection.new_channel
       end
-
+      
       def self.default_options
         {
           :auto_delete => false,

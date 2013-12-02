@@ -58,12 +58,8 @@ module Superbolt
     def send!(args=nil)
       self.arguments = args if args
       queue.push(message)
-      # MessageRam.new(self, :push_to_queue).besiege
     end
 
-    def push_to_queue
-      queue.push(message)
-    end
 
     def queue
       unless name

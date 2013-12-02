@@ -4,7 +4,7 @@ module Superbolt
 
     def initialize(delivery_info, payload, channel)
       @payload = payload
-      @tag = delivery_info.delivery_tag
+      @tag = delivery_info.delivery_tag if delivery_info
       @channel = channel
     end
 
@@ -14,8 +14,8 @@ module Superbolt
       payload
     end
 
-    def reject
-      channel.reject(tag)
+    def reject(requeue=true)
+      channel.reject(tag, requeue)
     end
 
     def ack

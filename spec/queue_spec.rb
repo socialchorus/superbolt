@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'Superbolt::Queue' do
   let(:name) { 'superbolt_test' }
-  let(:connection) { Superbolt::Connection.new }
   let(:queue) { Superbolt::Queue.new(name) }
   let(:messages) { [] }
 
@@ -60,19 +59,15 @@ describe 'Superbolt::Queue' do
     end
 
     describe '#all' do
-      before do
+      before do 
         queue.push(message)
         queue.push(message)
         queue.push(message)
       end
 
-      it "returns all the messages on the queue" do
-        messages = queue.all
-        messages.size.should == 3
-        messages.uniq.should == [decoded]
-      end
-
-      it "does not consume the messages" do
+      it "returns all the messages on the queue and doesnt consume them" do
+        Superbolt::IncomingMessage.should_receive(:new).exactly(3).times.and_return(double('whatever', parse:true))
+        queue.all
         queue.size.should == 3
       end
     end
@@ -117,8 +112,8 @@ describe 'Superbolt::Queue' do
       end
 
       it "returns all messages where the block is true" do
-        messages = queue.delete{|json| json['i'] > 2 && json['i'] != 6 && json['i'] < 8 }
-        messages.map{|json| json['i']}.should == [3,4,5,7]
+        messages = queue.delete{|json| json['i'] % 2 != 0 }
+        messages.map{|json| json['i']}.should == [1,3,5,7,9]
       end
 
       it "removes those messages from the queue" do

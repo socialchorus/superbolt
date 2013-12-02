@@ -16,13 +16,6 @@ module Superbolt
         @channel = nil
         response
       end
-
-      delegate :queues, :acknowledge, :reject, :queue,
-        to: :channel
-
-      def exchange
-        channel.default_exchange
-      end
     end
   end
 end
