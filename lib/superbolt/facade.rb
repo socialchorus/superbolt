@@ -24,5 +24,4 @@ module Superbolt
   def self.message(args={})
     Superbolt::Messenger.new(args)
   end
-  CONNECTION = Adapter::Bunny.new(config)
 end

@@ -9,11 +9,11 @@ module Superbolt
       end
 
       def new_channel
-        socket.create_channel
+        socket.create_channel 
       end
 
-      def channel=(new_channel)
-        @channel = new_channel
+      def channel=(usually_nil)
+        @channel = usually_nil
       end
     end
   end

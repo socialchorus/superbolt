@@ -18,5 +18,5 @@ require "superbolt/processor"
 require "superbolt/facade"
 require "superbolt/messenger"
 require "superbolt/spec_helpers"
-
+CONNECTION = Superbolt::Adapter::Bunny.new(Superbolt.config)
 $stdout.sync = true
