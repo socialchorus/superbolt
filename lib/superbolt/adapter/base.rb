@@ -5,6 +5,7 @@ module Superbolt
 
       def initialize(config=nil)
         @config = config || Superbolt.config
+        @channel = new_channel
       end
 
       delegate :closed?, :open, :open?,
