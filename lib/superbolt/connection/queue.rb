@@ -7,8 +7,8 @@ module Superbolt
 
       def close
         channel.close
-        @channel = nil if channel.closed?
-        @q = nil if channel.closed?
+        @channel = nil
+        @q = nil
       end
 
       def closing(&block)
