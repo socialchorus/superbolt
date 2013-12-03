@@ -16,7 +16,6 @@ require "superbolt/incoming_message"
 require "superbolt/app"
 require "superbolt/processor"
 require "superbolt/facade"
-require "superbolt/message_ram"
 require "superbolt/messenger"
 require "superbolt/spec_helpers"
 
