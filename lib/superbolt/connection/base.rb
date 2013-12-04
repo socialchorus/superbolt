@@ -24,9 +24,18 @@ module Superbolt
         to: :q
 
       def channel
-        @channel ||= connection.new_channel
+        return @channel if @channel 
+        tries = 0
+        begin
+          @channel = connection.new_channel
+        rescue CommandInvalid
+          @channel.close
+          @channel = nil
+          tries += 1
+          retry if tries < 2
+        end
       end
-      
+            
       def self.default_options
         {
           :auto_delete => false,
