@@ -28,7 +28,7 @@ module Superbolt
         tries = 0
         begin
           @channel = connection.new_channel
-        rescue ::Bunny::Session::CommandInvalid
+        rescue ::Bunny::CommandInvalid
           @channel.close
           @channel = nil
           tries += 1
