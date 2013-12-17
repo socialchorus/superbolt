@@ -24,13 +24,12 @@ module Superbolt
         to: :q
 
       def channel
-        return @channel if @channel 
+        return @channel if @channel.try(:open?)
         tries = 0
         begin
           @channel = connection.new_channel
         rescue ::Bunny::CommandInvalid
           @channel.close
-          @channel = nil
           tries += 1
           retry if tries < 2
         end
