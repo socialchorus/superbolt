@@ -28,7 +28,7 @@ module Superbolt
         tries = 0
         begin
           @channel = connection.new_channel
-        rescue ::Bunny::CommandInvalid
+        rescue ::Bunny::CommandInvalid # only happens if a channel is already open
           @channel.close
           tries += 1
           retry if tries < 2
