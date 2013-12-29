@@ -1,15 +1,31 @@
 require 'spec_helper'
 
 describe Superbolt, 'the facade' do
-  describe '.config' do
-    after do
-      Superbolt.instance_eval do
-        @config = nil
-      end
+  before do
+    Superbolt.instance_eval do
+      @config = nil
+    end
+  end
+    
+  describe 'total configuration' do
+    before do
+      Superbolt.app_name = 'bossanova'
+      Superbolt.env = 'production'
+      Superbolt.config = {
+        connection_key: 'SOME_RABBITMQ_URL'
+      }
     end
 
-    it "stores the default" do
-      Superbolt.config.should == Superbolt::Config.new
+    it "should retain the configuration information" do
+      Superbolt.config.app_name.should == 'bossanova'
+      Superbolt.config.env.should == 'production'
+      Superbolt.config.env_connection_key.should == 'SOME_RABBITMQ_URL'
+    end
+  end
+
+  describe '.config' do
+    it "has a default" do
+      Superbolt.config.should == Superbolt::Config.new({})
     end
 
     it "can be customized" do

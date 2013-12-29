@@ -1,9 +1,18 @@
 module Superbolt
   class Config
     attr_reader :options
+    attr_writer :app_name, :env
 
     def initialize(options={})
       @options = options
+    end
+
+    def app_name
+      @app_name ||= options[:app_name]
+    end
+
+    def env
+      @env ||= options[:env]
     end
 
     def connection_params

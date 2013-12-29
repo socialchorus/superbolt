@@ -1,7 +1,10 @@
 module Superbolt
   
   def self.config=(options)
-    @config = Config.new(options)
+    @config = Config.new({
+      env: env,
+      app_name: app_name
+    }.merge(options))
   end
 
   def self.config

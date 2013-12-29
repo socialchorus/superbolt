@@ -9,6 +9,23 @@ describe Superbolt::Config do
     {}
   }
 
+  describe 'non connection configuration' do
+    let(:options) {
+      {
+        app_name: 'my_great_app',
+        env: 'staging'
+      }
+    }
+
+    it "should make the app name available" do
+      config.app_name.should == 'my_great_app'
+    end
+
+    it "should make the env available" do
+      config.env.should == 'staging'
+    end
+  end
+
   describe '#connection' do
     context "environmental variables" do
       context 'default behavior' do
@@ -33,7 +50,9 @@ describe Superbolt::Config do
         let(:old_value) { ENV['SOMEOTHERURL'] }
         let(:url) { 'http://someother-url.com' }
         let(:options) {
-          {connection_key: 'SOMEOTHERURL'}
+          {
+            connection_key: 'SOMEOTHERURL'
+          }
         }
 
         before do
