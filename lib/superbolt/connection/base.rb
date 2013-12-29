@@ -24,7 +24,8 @@ module Superbolt
         to: :q
 
       def channel
-        return @channel if @channel.try(:open?)
+        return @channel if @channel && @channel.open?
+        
         tries = 0
         begin
           @channel = connection.new_channel
