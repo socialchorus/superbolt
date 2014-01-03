@@ -78,64 +78,11 @@ describe Superbolt::Messenger do
         messenger.data({foo: 'bar'})
         messenger.data.should == {foo: 'bar'}
       end
-
-      describe '#retry_time' do
-        before do
-          Superbolt.config.options[:retry_time] = nil
-        end
-
-        context 'config contains retry_time' do
-          it 'returns config value' do
-            Superbolt.config.options[:retry_time] = 12
-            messenger.retry_after.should == 12
-          end
-        end
-
-        context 'config does not contain retry_time but we pass it in' do
-          it 'returns passed in value' do
-            messenger.retry_after(11)
-            messenger.retry_after.should == 11
-          end
-        end
-
-        context 'config does not contain retry_time and we dont pass it in' do
-          it 'returns default value' do
-            messenger.retry_after.should == 10
-          end
-        end
-      end
-
-      describe '#retry_time' do
-        before do
-          Superbolt.config.options[:timeout] = nil
-        end
-
-        context 'config contains retry_time' do
-          it 'returns config value' do
-            Superbolt.config.options[:timeout] = 120
-            messenger.timeout_after.should == 120
-          end
-        end
-
-        context 'config does not contain retry_time but we pass it in' do
-          it 'returns passed in value' do
-            messenger.timeout_after(90)
-            messenger.timeout_after.should == 90
-          end
-        end
-
-        context 'config does not contain retry_time and we dont pass it in' do
-          it 'returns default value' do
-            messenger.timeout_after.should == 60
-          end
-        end
-      end
     end
   end
 
   describe 'send!' do
     before do
-      Superbolt.config.options[:retry_time] = 0
       messenger
         .to(name)
         .from('me')

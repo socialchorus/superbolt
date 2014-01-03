@@ -2,12 +2,12 @@ module Superbolt
   module Connection
     class Queue < Base
       def connection
-        CONNECTION
+        @connection ||= Adapter::Bunny.new(config)
       end
 
       def close
-        channel.close
-        @channel = nil
+        connection.close
+        @connection = nil
         @q = nil
       end
 
@@ -15,6 +15,11 @@ module Superbolt
         response = block.call
         close
         response
+      end
+
+      def writer
+        q # to make sure it is connected
+        connection.exchange
       end
     end
   end

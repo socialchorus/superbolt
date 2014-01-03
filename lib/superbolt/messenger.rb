@@ -1,6 +1,6 @@
 module Superbolt
   class Messenger
-    attr_accessor :origin, :name, :event, :arguments, :env, :retry_time, :timeout, :live_queue
+    attr_accessor :origin, :name, :event, :arguments, :env
 
     def initialize(options={})
       @name = options.delete(:to)
@@ -8,8 +8,6 @@ module Superbolt
       @event = options.delete(:event) || self.class.defaultevent
       @env = Superbolt.env
       @arguments = options
-      @retry_time = Superbolt.config.options[:retry_time] || 10
-      @timeout = Superbolt.config.options[:timeout] || 60
     end
 
     def message
@@ -38,14 +36,6 @@ module Superbolt
       attr_chainer(:arguments, val)
     end
 
-    def retry_after(val=nil)
-      attr_chainer(:retry_time, val)
-    end
-
-    def timeout_after(val=nil)
-      attr_chainer(:timeout, val)
-    end
-
     def attr_chainer(attr, val)
       return send(attr) unless val
       self.send("#{attr}=", val)
@@ -60,12 +50,11 @@ module Superbolt
       queue.push(message)
     end
 
-
     def queue
       unless name
         raise "no destination app name defined, please pass one in"
       end
-      @live_queue = Queue.new(destination_name)
+      Queue.new(destination_name)
     end
 
     def destination_name

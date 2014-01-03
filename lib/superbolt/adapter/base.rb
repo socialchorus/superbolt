@@ -5,7 +5,6 @@ module Superbolt
 
       def initialize(config=nil)
         @config = config || Superbolt.config
-        @channel = new_channel
       end
 
       delegate :closed?, :open, :open?,
@@ -16,6 +15,13 @@ module Superbolt
         @socket = nil
         @channel = nil
         response
+      end
+
+      delegate :queues, :acknowledge, :reject, :queue,
+        to: :channel
+
+      def exchange
+        channel.default_exchange
       end
     end
   end

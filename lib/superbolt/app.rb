@@ -19,7 +19,7 @@ module Superbolt
     end
 
     delegate :close, :closing, :exclusive?, :durable?, :auto_delete?,
-      :channel, :q,
+      :writer, :channel, :q,
         to: :connection
 
     def queue
@@ -40,7 +40,7 @@ module Superbolt
 
     def run(&block)
       EventMachine.run do
-        queue.subscribe(ack: false) do |metadata, properties,  payload|
+        queue.subscribe(ack: false) do |metadata, payload|
           message = IncomingMessage.new(metadata, payload, channel)
           processor = Processor.new(message, logger, &block)
           unless processor.perform
@@ -48,9 +48,8 @@ module Superbolt
           end
         end
 
-        quit_subscriber_queue.subscribe do |metadata, properties, payload|
-          parsed_payload = JSON.parse(payload)
-          quit(parsed_payload['message'])
+        quit_subscriber_queue.subscribe do |message|
+          quit(message)
         end
       end
     end
