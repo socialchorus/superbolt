@@ -29,7 +29,7 @@ describe 'Superbolt::Queue' do
 
     describe '#push' do
       let(:bunny_queue) {connection.queue(name, Superbolt::Queue.default_options)}
-      
+
       it "writes to the queue" do
         queue.push(message)
         queue.size.should == 1

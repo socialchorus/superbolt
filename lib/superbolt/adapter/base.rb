@@ -10,13 +10,6 @@ module Superbolt
       delegate :closed?, :open, :open?,
         to: :socket
 
-      def close
-        response = socket.close
-        @socket = nil
-        @channel = nil
-        response
-      end
-
       delegate :queues, :acknowledge, :reject, :queue,
         to: :channel
 
