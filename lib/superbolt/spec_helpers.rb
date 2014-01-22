@@ -1,15 +1,13 @@
 module Superbolt
   module SpecHelpers
     def superbolt_message
-      return @superbolt_message if @superbolt_message
-
-      @superbolt_message = Superbolt::Messenger.new
-      @superbolt_message.stub(:send!) do |args|
-        @superbolt_message.data(args)
-        superbolt_messages << @superbolt_message
+      superbolt_message = Superbolt::Messenger.new
+      superbolt_message.stub(:send!) do |args|
+        superbolt_message.data(args)
+        superbolt_messages << superbolt_message
       end
 
-      @superbolt_message
+      superbolt_message
     end
 
     def last_superbolt_message
@@ -21,7 +19,7 @@ module Superbolt
     end
 
     def stub_superbolt_messenger
-      Superbolt.stub(:message).and_return(superbolt_message)
+      Superbolt.stub(:message) { |args| superbolt_message }
     end
   end
 end
