@@ -58,7 +58,8 @@ module Superbolt
       error_message = message.merge({error: {
         class: error.class,
         message: error.message,
-        backtrace: error.backtrace
+        backtrace: error.backtrace,
+        errored_at: Time.now
       }})
       error_queue.push(error_message)
     end
