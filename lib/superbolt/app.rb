@@ -40,13 +40,16 @@ module Superbolt
 
     def run(&block)
       EventMachine.run do
+        # only get one message at a time for performance
+        queue.channel.prefetch(1)
+
         queue.subscribe(ack: true) do |metadata, payload|
           message = IncomingMessage.new(metadata, payload, channel)
           processor = Processor.new(message, logger, &block)
           unless processor.perform
             on_error(message.parse, processor.exception)
           end
-          metadata.ack
+          message.ack
         end
 
         quit_subscriber_queue.subscribe do |message|
