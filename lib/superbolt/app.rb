@@ -41,7 +41,9 @@ module Superbolt
     def run(&block)
       EventMachine.run do
         # only get one message at a time for performance
+        # and tell it to auto reconnect, duh!
         queue.channel.prefetch(1)
+        queue.channel.auto_recovery = true
 
         queue.subscribe(ack: true) do |metadata, payload|
           message = IncomingMessage.new(metadata, payload, channel)
