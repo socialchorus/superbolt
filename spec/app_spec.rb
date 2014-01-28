@@ -1,15 +1,17 @@
 require 'spec_helper'
 
 describe Superbolt::App do
+  let(:app) {
+    Superbolt::App.new(name, {
+      env: env,
+      logger: logger,
+      runner: runner_type
+    })
+  }
+
   let(:env)         { 'test' }
   let(:name)        { 'superbolt' }
   let(:logger)      { Logger.new('/dev/null') }
-  let(:app)         {
-                       Superbolt::App.new(name, {
-                         env: env,
-                         logger: logger
-                       })
-                    }
   let(:queue)       { Superbolt::Queue.new("#{name}_#{env}") }
   let(:quit_queue)  { Superbolt::Queue.new("#{name}_#{env}.quit") }
   let(:error_queue) { Superbolt::Queue.new("#{name}_#{env}.error") }
@@ -21,7 +23,7 @@ describe Superbolt::App do
     error_queue.clear
   end
 
-  describe '#run' do
+  shared_examples 'app' do
     it "shuts down with any message to the quit queue" do
       queue.push({please: 'stop'})
 
@@ -94,5 +96,29 @@ describe Superbolt::App do
       queue.size.should == 0
       error_queue.size.should == 1
     end
+  end
+
+  context 'when runner acknowledges one' do
+    let(:runner_type) { :ack_one }
+
+    it_should_behave_like "app"
+  end
+
+  context 'when runner acknowledges without a prefetch limit' do
+    let(:runner_type) { :ack }
+
+    it_should_behave_like 'app'
+  end
+
+  context 'when runner does not acknowledge and has no limits' do
+    let(:runner_type) { :greedy }
+
+    it_should_behave_like 'app'
+  end
+
+  context 'when the runner pops without acknowledgment' do
+    let(:runner_type) { :pop }
+
+    it_should_behave_like "app"
   end
 end

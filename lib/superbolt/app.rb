@@ -1,17 +1,27 @@
 module Superbolt
   class App
-    attr_reader :config, :env
+    attr_reader :config, :env, :runner_type
     attr_accessor :logger
 
     def initialize(name, options={})
       @name = name
-      @env = options[:env] || Superbolt.env
-      @logger = options[:logger] || Logger.new($stdout)
-      @config = options[:config] || Superbolt.config
+      @env =            options[:env] || Superbolt.env
+      @logger =         options[:logger] || Logger.new($stdout)
+      @runner_type =    options[:runner] || :default
+      @config =         options[:config] || Superbolt.config
     end
 
     def name
       env ? "#{@name}_#{env}" : @name
+    end
+
+    # just in case you have a handle to the app and want to quit it
+    def quit_queue
+      Queue.new("#{connection.name}.quit", connection.config)
+    end
+
+    def error_queue
+      Queue.new("#{connection.name}.error", connection.config)
     end
 
     def connection
@@ -30,29 +40,11 @@ module Superbolt
       connection.qq
     end
 
-    def quit_queue
-      Queue.new("#{connection.name}.quit", connection.config)
-    end
-
-    def error_queue
-      Queue.new("#{connection.name}.error", connection.config)
-    end
-
     def run(&block)
       EventMachine.run do
-        # only get one message at a time for performance
-        # and tell it to auto reconnect, duh!
-        queue.channel.prefetch(1)
         queue.channel.auto_recovery = true
 
-        queue.subscribe(ack: true) do |metadata, payload|
-          message = IncomingMessage.new(metadata, payload, channel)
-          processor = Processor.new(message, logger, &block)
-          unless processor.perform
-            on_error(message.parse, processor.exception)
-          end
-          message.ack
-        end
+        runner_class.new(queue, error_queue, logger, block).run
 
         quit_subscriber_queue.subscribe do |message|
           quit(message)
@@ -60,14 +52,21 @@ module Superbolt
       end
     end
 
-    def on_error(message, error)
-      error_message = message.merge({error: {
-        class: error.class,
-        message: error.message,
-        backtrace: error.backtrace,
-        errored_at: Time.now
-      }})
-      error_queue.push(error_message)
+    def runner_class
+      runner_map[runner_type] || default_runner
+    end
+
+    def runner_map
+      {
+        pop:      Runner::Pop,
+        ack_one:  Runner::AckOne,
+        ack:      Runner::Ack,
+        greedy:   Runner::Greedy
+      }
+    end
+
+    def default_runner
+      runner_map[:ack_one]
     end
 
     def quit(message='no message given')
