@@ -4,7 +4,7 @@ module Superbolt
   class MessageHandler
     attr_reader :arguments, :logger
 
-    def initialize(arguments, logger)
+    def initialize(arguments, logger=nil)
       @arguments = arguments
       @logger = logger
       parse_arguments
