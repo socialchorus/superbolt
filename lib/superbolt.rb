@@ -4,6 +4,8 @@ require 'bunny'
 require 'amqp'
 require 'eventmachine'
 require 'active_support/core_ext/module/delegation'
+require 'active_support/core_ext/hash'
+require 'active_support/inflector'
 
 require "superbolt/version"
 require "superbolt/config"
@@ -30,5 +32,8 @@ require "superbolt/processor"
 require "superbolt/facade"
 require "superbolt/messenger"
 require "superbolt/spec_helpers"
+
+require "superbolt/router"
+require "superbolt/message_handler"
 
 $stdout.sync = true
