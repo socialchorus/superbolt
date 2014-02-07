@@ -17,7 +17,7 @@ module Superbolt
       end
 
       def q
-        @q ||= connection.queue(name, self.class.default_options)
+        @q ||= connection.queue(name, self.class.default_options).bind(name)
       end
 
       delegate :exclusive?, :durable?, :auto_delete?,

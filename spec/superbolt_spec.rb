@@ -48,6 +48,10 @@ describe Superbolt, 'the facade' do
   end
 
   describe '.message' do
+    before {
+      Superbolt.config.app_name = 'activator'
+      Superbolt.config.env = 'test'
+    }
     it "sends messages via the messenger system" do
       queue = Superbolt.queue('activator_test')
       queue.clear

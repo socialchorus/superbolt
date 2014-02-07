@@ -17,7 +17,7 @@ module Superbolt
 
     def push(message)
       closing do
-        writer.publish(message.to_json, routing_key: name)
+        writer.basic_publish(message.to_json, name, '', {})
       end
     end
 

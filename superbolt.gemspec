@@ -22,6 +22,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "amqp"
   spec.add_dependency "bunny"
   spec.add_dependency 'eventmachine'
+  spec.add_dependency 'pry-debugger'
+  spec.add_dependency 'pry-stack_explorer'
+  spec.add_dependency 'pry-rescue'
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"

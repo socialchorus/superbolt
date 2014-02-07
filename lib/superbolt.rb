@@ -31,6 +31,7 @@ require "superbolt/app"
 require "superbolt/processor"
 require "superbolt/facade"
 require "superbolt/messenger"
+require "superbolt/transaction"
 require "superbolt/spec_helpers"
 
 require "superbolt/router"

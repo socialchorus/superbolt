@@ -7,6 +7,8 @@ describe 'Superbolt::Queue' do
   let(:messages) { [] }
 
   before do
+    Superbolt.config.app_name = 'superbolt'
+    Superbolt.config.env = 'test'
     queue.clear
   end
 

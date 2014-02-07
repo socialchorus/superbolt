@@ -19,7 +19,7 @@ module Superbolt
 
       def writer
         q # to make sure it is connected
-        connection.exchange
+        connection.channel
       end
     end
   end

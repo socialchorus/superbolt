@@ -5,6 +5,7 @@ module Superbolt
 
       def initialize(config=nil)
         @config = config || Superbolt.config
+        exchange # to make sure the exchange exists
       end
 
       delegate :closed?, :open, :open?,
@@ -14,7 +15,10 @@ module Superbolt
         to: :channel
 
       def exchange
-        channel.default_exchange
+        name = config.app_name + '_' + config.env
+        channel.fanout(name + '.error')
+        channel.fanout(name + '.quit')
+        channel.fanout(name)
       end
     end
   end

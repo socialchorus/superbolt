@@ -6,9 +6,11 @@ describe Superbolt::Messenger do
   let(:queue) { Superbolt::Queue.new("#{name}_#{env}") }
 
   before do
+    Superbolt.config.app_name = name
+    Superbolt.config.env = env
     queue.clear
-    Superbolt.env = env
     Superbolt.app_name = nil
+    Superbolt.env = env
   end
 
   let(:messenger) { Superbolt::Messenger.new }
