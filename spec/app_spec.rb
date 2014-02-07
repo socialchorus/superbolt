@@ -18,8 +18,6 @@ describe Superbolt::App do
   let(:messages)    { [] }
 
   before do
-    Superbolt.config.app_name = name
-    Superbolt.config.env = env
     queue.clear
     quit_queue.clear
     error_queue.clear

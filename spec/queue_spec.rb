@@ -7,8 +7,6 @@ describe 'Superbolt::Queue' do
   let(:messages) { [] }
 
   before do
-    Superbolt.config.app_name = 'superbolt'
-    Superbolt.config.env = 'test'
     queue.clear
   end
 
@@ -128,19 +126,6 @@ describe 'Superbolt::Queue' do
         queue.delete{|json| json['i'] > 2 && json['i'] != 6 && json['i'] < 8 }
         queue.size.should == 6
       end
-    end
-  end
-
-  describe 'errors cases' do
-    let(:new_queue) { Superbolt::Queue.new("random.name.#{rand(1_000_000)}") }
-
-    after do
-      new_queue.clear
-    end
-
-    it "should store messages to a queue, even when writing before declaring the queue" do
-      new_queue.push({my: 'message'})
-      new_queue.size.should == 1
     end
   end
 end
