@@ -15,10 +15,13 @@ module Superbolt
         to: :channel
 
       def exchange
-        name = config.app_name + '_' + config.env
-        channel.fanout(name + '.error')
-        channel.fanout(name + '.quit')
-        channel.fanout(name)
+        channel.fanout(exchange_name + '.error')
+        channel.fanout(exchange_name + '.quit')
+        channel.fanout(exchange_name)
+      end
+
+      def exchange_name
+        config.app_name + '_' + config.env
       end
     end
   end
