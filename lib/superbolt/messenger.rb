@@ -47,7 +47,16 @@ module Superbolt
 
     def send!(args=nil)
       self.arguments = args if args
+      pack_files
       queue.push(message)
+    end
+
+    def pack_files
+      return unless arguments.is_a?(Hash)
+      file_keys = arguments.keys.find_all { |key| key.to_s.match(Superbolt.file_matcher) }
+      file_keys.each do |key|
+        arguments[key] = FileMarshal::Dumper.new(arguments[key]).to_hash
+      end
     end
 
     def queue

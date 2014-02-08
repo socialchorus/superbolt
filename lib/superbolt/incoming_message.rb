@@ -9,7 +9,8 @@ module Superbolt
     end
 
     def parse
-      JSON.parse(payload)
+      hash = JSON.parse(payload)
+      unpack_files(hash)
     rescue JSON::ParserError
       payload
     end
@@ -21,6 +22,11 @@ module Superbolt
     def ack
       channel.acknowledge(tag)
     end
+
+    def unpack_files(hash)
+      return hash unless hash.is_a?(Hash) && hash["arguments"].is_a?(Hash)
+      hash['arguments'] = FileUnpacker.new(hash["arguments"]).perform
+      hash
+    end
   end
 end
-
