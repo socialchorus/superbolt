@@ -104,6 +104,12 @@ describe Superbolt::App do
     it_should_behave_like "app"
   end
 
+  context 'when runner acknowledges one and uses activerecord deferrable' do
+    let(:runner_type) { :ar_deferrable }
+
+    it_should_behave_like "app"
+  end
+
   context 'when runner acknowledges without a prefetch limit' do
     let(:runner_type) { :ack }
 
