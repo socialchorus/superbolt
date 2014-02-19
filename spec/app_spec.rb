@@ -5,7 +5,7 @@ describe Superbolt::App do
     Superbolt::App.new(name, {
       env: env,
       logger: logger,
-      config: double('config', runner_type: runner_type, connection_params: true)
+      runner: runner_type
     })
   }
 
@@ -22,7 +22,6 @@ describe Superbolt::App do
     quit_queue.clear
     error_queue.clear
   end
-
 
   shared_examples 'app' do
     it "shuts down with any message to the quit queue" do
@@ -63,6 +62,7 @@ describe Superbolt::App do
 
       queue.size.should == 0
     end
+
 
     it "passes a logger to the block" do
       mock_logger = double
@@ -106,15 +106,6 @@ describe Superbolt::App do
 
   context 'when runner acknowledges one and uses activerecord deferrable' do
     let(:runner_type) { :ar_deferrable }
-    module ActiveRecord
-      class Base
-      end
-    end
-
-    before do
-      ActiveRecord::Base.stub(:connection).and_return(double('connection', disconnect!: true))
-      ActiveRecord::Base.stub(:establish_connection)
-    end
 
     it_should_behave_like "app"
   end
@@ -135,17 +126,5 @@ describe Superbolt::App do
     let(:runner_type) { :pop }
 
     it_should_behave_like "app"
-  end
-
-  context 'when there are additional runners in the apps config' do
-    let(:runner_type) { :monster_farts }
-
-    before do
-      Superbolt::App.additional_runners = {monster_farts: 'stinky'}
-    end
-
-    it 'uses the injected runner' do
-      app.runner_class.should == 'stinky'
-    end
   end
 end

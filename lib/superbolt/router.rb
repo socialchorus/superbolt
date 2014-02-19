@@ -21,7 +21,7 @@ module Superbolt
 
     def perform
       if handler_class
-        handler_class.new(arguments, logger).perform
+        handler_class.new(arguments, logger).perform 
       else
         logger.warn "No Superbolt route for event: '#{event}'"
       end
