@@ -25,6 +25,7 @@ require "superbolt/runner/ack_one"
 require "superbolt/runner/ack"
 require "superbolt/runner/pop"
 require "superbolt/runner/greedy"
+require "superbolt/runner/active_record_deferrable"
 
 require "superbolt/queue"
 require "superbolt/incoming_message"

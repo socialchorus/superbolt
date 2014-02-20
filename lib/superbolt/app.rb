@@ -1,13 +1,12 @@
 module Superbolt
   class App
-    attr_reader :config, :env, :runner_type
+    attr_reader :config, :env
     attr_accessor :logger
 
     def initialize(name, options={})
       @name = name
       @env =            options[:env] || Superbolt.env
       @logger =         options[:logger] || Logger.new($stdout)
-      @runner_type =    options[:runner] || :default
       @config =         options[:config] || Superbolt.config
     end
 
@@ -44,7 +43,7 @@ module Superbolt
       EventMachine.run do
         queue.channel.auto_recovery = true
 
-        # LShift came up with this solution, which helps reconnect when 
+        # LShift came up with this solution, which helps reconnect when
         # a process runs longer than the heartbeat (and therefore disconnects)
         queue.channel.connection.on_tcp_connection_loss do |conn, settings|
           puts 'Lost TCP connection, reconnecting'
@@ -60,7 +59,7 @@ module Superbolt
     end
 
     def runner_class
-      runner_map[runner_type] || default_runner
+      runner_map[config.runner_type] || default_runner
     end
 
     def runner_map
@@ -68,7 +67,8 @@ module Superbolt
         pop:      Runner::Pop,
         ack_one:  Runner::AckOne,
         ack:      Runner::Ack,
-        greedy:   Runner::Greedy
+        greedy:   Runner::Greedy,
+        ar_deferrable: Runner::ActiveRecordDeferrable
       }
     end
 
