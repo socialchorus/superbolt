@@ -11,7 +11,7 @@ module Superbolt
       end
 
       def subscribe
-        queue.subscribe(ack: ack) do |metadata, payload|
+        queue.subscribe(ack: ack) do |delivery_info, metadata, payload|
           #Thanks again to LShift for this solution to long-running processes
           #Defer keeps heartbeat running while the process finishes
 
@@ -20,7 +20,7 @@ module Superbolt
             after_fork
 
             # this gets run on the thread pool
-            message = Superbolt::IncomingMessage.new(metadata, payload, channel)
+            message = Superbolt::IncomingMessage.new(delivery_info, payload, channel)
             processor = Superbolt::Processor.new(message, logger, &block)
             unless processor.perform
               on_error(message.parse, processor.exception)

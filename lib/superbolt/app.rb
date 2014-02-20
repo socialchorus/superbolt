@@ -24,7 +24,7 @@ module Superbolt
     end
 
     def connection
-      @connection ||= Connection::App.new(name, config)
+      @connection ||= Connection::Queue.new(name, config)
     end
 
     delegate :close, :closing, :exclusive?, :durable?, :auto_delete?,
@@ -41,14 +41,14 @@ module Superbolt
 
     def run(&block)
       EventMachine.run do
-        queue.channel.auto_recovery = true
+        # queue.channel.auto_recovery = true
 
         # LShift came up with this solution, which helps reconnect when
         # a process runs longer than the heartbeat (and therefore disconnects)
-        queue.channel.connection.on_tcp_connection_loss do |conn, settings|
-          puts 'Lost TCP connection, reconnecting'
-          conn.reconnect(false, 2)
-        end
+        # queue.channel.connection.on_tcp_connection_loss do |conn, settings|
+        #   puts 'Lost TCP connection, reconnecting'
+        #   conn.reconnect(false, 2)
+        # end
 
         runner_class.new(queue, error_queue, logger, block).run
 

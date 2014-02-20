@@ -21,6 +21,10 @@ module Superbolt
         q # to make sure it is connected
         connection.exchange
       end
+
+      def qq
+        @qq ||= connection.queue("#{name}.quit", self.class.default_options)
+      end
     end
   end
 end
