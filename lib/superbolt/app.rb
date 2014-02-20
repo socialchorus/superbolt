@@ -69,7 +69,15 @@ module Superbolt
         ack:      Runner::Ack,
         greedy:   Runner::Greedy,
         ar_deferrable: Runner::ActiveRecordDeferrable
-      }
+      }.merge(self.class.additional_runners)
+    end
+
+    def self.additional_runners
+      @additional_runners ||= {}
+    end
+
+    def self.additional_runners=(ar)
+      @additional_runners = ar
     end
 
     def default_runner
