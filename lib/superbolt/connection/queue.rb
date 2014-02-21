@@ -5,8 +5,9 @@ module Superbolt
         @connection ||= Adapter::Bunny.new(config)
       end
 
-      def close
+      def close(&block)
         connection.close
+        block.call if block
         @connection = nil
         @q = nil
       end
@@ -20,6 +21,10 @@ module Superbolt
       def writer
         q # to make sure it is connected
         connection.exchange
+      end
+
+      def qq
+        @qq ||= connection.queue("#{name}.quit", self.class.default_options)
       end
     end
   end

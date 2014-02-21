@@ -11,26 +11,15 @@ module Superbolt
       end
 
       def subscribe
-        queue.subscribe(ack: ack) do |metadata, payload|
-          #Thanks again to LShift for this solution to long-running processes
-          #Defer keeps heartbeat running while the process finishes
+        queue.subscribe(ack: ack) do |delivery_info, metadata, payload|
 
-          before_fork
-          EM.defer do
-            after_fork
-
-            # this gets run on the thread pool
-            message = Superbolt::IncomingMessage.new(metadata, payload, channel)
-            processor = Superbolt::Processor.new(message, logger, &block)
-            unless processor.perform
-              on_error(message.parse, processor.exception)
-            end
-
-            EM.next_tick do
-              # this gets run back on the main loop
-              message.ack if ack
-            end
+          message = Superbolt::IncomingMessage.new(delivery_info, payload, channel)
+          processor = Superbolt::Processor.new(message, logger, &block)
+          unless processor.perform
+            on_error(message.parse, processor.exception)
           end
+
+          message.ack if ack
         end
       end
 
@@ -38,14 +27,6 @@ module Superbolt
       end
 
       def prefetch
-      end
-
-      def before_fork
-        # Implement me in da subclass
-      end
-
-      def after_fork
-        # Implement me in da subclass
       end
     end
   end

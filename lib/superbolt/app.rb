@@ -1,6 +1,6 @@
 module Superbolt
   class App
-    attr_reader :config, :env
+    attr_reader :config, :env, :runner_type
     attr_accessor :logger
 
     def initialize(name, options={})
@@ -8,6 +8,7 @@ module Superbolt
       @env =            options[:env] || Superbolt.env
       @logger =         options[:logger] || Logger.new($stdout)
       @config =         options[:config] || Superbolt.config
+      @runner_type =    options[:runner] || :default
     end
 
     def name
@@ -24,7 +25,7 @@ module Superbolt
     end
 
     def connection
-      @connection ||= Connection::App.new(name, config)
+      @connection ||= Connection::Queue.new(name, config)
     end
 
     delegate :close, :closing, :exclusive?, :durable?, :auto_delete?,
@@ -41,15 +42,6 @@ module Superbolt
 
     def run(&block)
       EventMachine.run do
-        queue.channel.auto_recovery = true
-
-        # LShift came up with this solution, which helps reconnect when
-        # a process runs longer than the heartbeat (and therefore disconnects)
-        queue.channel.connection.on_tcp_connection_loss do |conn, settings|
-          puts 'Lost TCP connection, reconnecting'
-          conn.reconnect(false, 2)
-        end
-
         runner_class.new(queue, error_queue, logger, block).run
 
         quit_subscriber_queue.subscribe do |message|
@@ -59,7 +51,7 @@ module Superbolt
     end
 
     def runner_class
-      runner_map[config.runner_type] || default_runner
+      runner_map[runner_type] || default_runner
     end
 
     def runner_map
@@ -67,17 +59,8 @@ module Superbolt
         pop:      Runner::Pop,
         ack_one:  Runner::AckOne,
         ack:      Runner::Ack,
-        greedy:   Runner::Greedy,
-        ar_deferrable: Runner::ActiveRecordDeferrable
-      }.merge(self.class.additional_runners)
-    end
-
-    def self.additional_runners
-      @additional_runners ||= {}
-    end
-
-    def self.additional_runners=(ar)
-      @additional_runners = ar
+        greedy:   Runner::Greedy
+      }
     end
 
     def default_runner

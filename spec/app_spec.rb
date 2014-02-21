@@ -104,21 +104,6 @@ describe Superbolt::App do
     it_should_behave_like "app"
   end
 
-  context 'when runner acknowledges one and uses activerecord deferrable' do
-    let(:runner_type) { :ar_deferrable }
-    module ActiveRecord
-      class Base
-      end
-    end
-
-    before do
-      ActiveRecord::Base.stub(:connection).and_return(double('connection', disconnect!: true))
-      ActiveRecord::Base.stub(:establish_connection)
-    end
-
-    it_should_behave_like "app"
-  end
-
   context 'when runner acknowledges without a prefetch limit' do
     let(:runner_type) { :ack }
 
@@ -135,17 +120,5 @@ describe Superbolt::App do
     let(:runner_type) { :pop }
 
     it_should_behave_like "app"
-  end
-
-  context 'when there are additional runners in the apps config' do
-    let(:runner_type) { :monster_farts }
-
-    before do
-      Superbolt::App.additional_runners = {monster_farts: 'stinky'}
-    end
-
-    it 'uses the injected runner' do
-      app.runner_class.should == 'stinky'
-    end
   end
 end
