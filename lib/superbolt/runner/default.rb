@@ -14,7 +14,7 @@ module Superbolt
         queue.subscribe(ack: ack) do |delivery_info, metadata, payload|
 
           message = Superbolt::IncomingMessage.new(delivery_info, payload, channel)
-          processor = Superbolt::Processor.new(message, logger, &block)
+          processor = processor_class.new(message, logger, &block)
           unless processor.perform
             on_error(message.parse, processor.exception)
           end
@@ -27,6 +27,10 @@ module Superbolt
       end
 
       def prefetch
+      end
+
+      def processor_class
+        Superbolt::Processor
       end
     end
   end
