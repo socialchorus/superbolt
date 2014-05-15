@@ -1,3 +1,3 @@
 module Superbolt
-  VERSION = "0.5.7" #possibly broken for file transfer :(
+  VERSION = "0.5.8" #possibly broken for file transfer :(
 end
