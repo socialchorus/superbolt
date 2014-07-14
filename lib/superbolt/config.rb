@@ -23,6 +23,10 @@ module Superbolt
       options[:connection_key] || 'RABBITMQ_URL'
     end
 
+    def runner
+      options[:runner]
+    end
+
     def env_params
       ENV[env_connection_key]
     end

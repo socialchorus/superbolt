@@ -8,7 +8,7 @@ module Superbolt
       @env =            options[:env] || Superbolt.env
       @logger =         options[:logger] || Logger.new($stdout)
       @config =         options[:config] || Superbolt.config
-      @runner_type =    options[:runner] || :default
+      @runner_type =    options[:runner] || config.runner || :default
     end
 
     def name
@@ -59,7 +59,8 @@ module Superbolt
         pop:      Runner::Pop,
         ack_one:  Runner::AckOne,
         ack:      Runner::Ack,
-        greedy:   Runner::Greedy
+        greedy:   Runner::Greedy,
+        pg:       Runner::Pg
       }
     end
 

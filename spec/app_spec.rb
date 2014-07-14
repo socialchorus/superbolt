@@ -5,7 +5,7 @@ describe Superbolt::App do
     Superbolt::App.new(name, {
       env: env,
       logger: logger,
-      config: double('config', runner_type: runner_type, connection_params: true)
+      config: double('config', runner: runner, connection_params: true)
     })
   }
 
@@ -99,25 +99,25 @@ describe Superbolt::App do
   end
 
   context 'when runner acknowledges one' do
-    let(:runner_type) { :ack_one }
+    let(:runner) { :ack_one }
 
     it_should_behave_like "app"
   end
 
   context 'when runner acknowledges without a prefetch limit' do
-    let(:runner_type) { :ack }
+    let(:runner) { :ack }
 
     it_should_behave_like 'app'
   end
 
   context 'when runner does not acknowledge and has no limits' do
-    let(:runner_type) { :greedy }
+    let(:runner) { :greedy }
 
     it_should_behave_like 'app'
   end
 
   context 'when the runner pops without acknowledgment' do
-    let(:runner_type) { :pop }
+    let(:runner) { :pop }
 
     it_should_behave_like "app"
   end
