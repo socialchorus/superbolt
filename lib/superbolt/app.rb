@@ -67,8 +67,8 @@ module Superbolt
 
     def quit(message='no message given')
       logger.info "EXITING Superbolt App listening on queue #{name}: #{message}"
-      q.channel.consumers.first[0]
-      q.channel.basic_cancel q.channel.consumers.first[0]
+      consumer = q.channel.consumers.first[0]
+      q.channel.basic_cancel consumer
       close
     end
   end
