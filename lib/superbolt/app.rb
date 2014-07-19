@@ -41,13 +41,10 @@ module Superbolt
     end
 
     def run(&block)
-      EventMachine.run do
-        runner_class.new(queue, error_queue, logger, block).run
-
-        quit_subscriber_queue.subscribe do |message|
-          quit(message)
-        end
-      end
+      @consumer = runner_class.new(queue, error_queue, logger, block).run
+      # quit_subscriber_queue.subscribe do |message|
+      #    (message)
+      # end
     end
 
     def runner_class
@@ -70,9 +67,9 @@ module Superbolt
 
     def quit(message='no message given')
       logger.info "EXITING Superbolt App listening on queue #{name}: #{message}"
-      close {
-        EventMachine.stop
-      }
+      q.channel.consumers.first[0]
+      q.channel.basic_cancel q.channel.consumers.first[0]
+      close
     end
   end
 end

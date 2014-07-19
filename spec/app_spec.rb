@@ -23,26 +23,33 @@ describe Superbolt::App do
     error_queue.clear
   end
 
+  after do
+    queue.clear
+    quit_queue.clear
+    error_queue.clear
+  end
 
   shared_examples 'app' do
-    it "shuts down with any message to the quit queue" do
-      queue.push({please: 'stop'})
+    # it "shuts down with any message to the quit queue" do
+    #   queue.push({please: 'stop'})
+    #   app.run do |arguments|
+    #     quit_queue.push({message: 'just because'})
+    #   end
 
-      app.run do |arguments|
-        quit_queue.push({message: 'just because'})
-      end
-
-      queue.size.should == 0
-      quit_queue.size.should == 0
-    end
+    #   queue.size.should == 0
+    #   quit_queue.size.should == 0
+    # end
 
     it 'passes messages to the block for processing' do
       queue.push({first: 1})
       queue.push({last: 2})
+      messages = []
 
       app.run do |message, logger|
         messages << message
-        quit_queue.push({message: 'quit'}) if message['last']
+        if messages.length > 1
+          app.quit
+        end
       end
 
       messages.size.should == 2
@@ -58,9 +65,10 @@ describe Superbolt::App do
 
       app.run do |message, logger|
         messages << message
-        quit_queue.push({message: 'quit'}) if message['last']
+        if messages.length > 1
+          app.quit
+        end
       end
-
       queue.size.should == 0
     end
 
@@ -79,44 +87,45 @@ describe Superbolt::App do
 
       app.run do |message, logger|
         logger.info(message)
-        quit_queue.push({message: 'stop!'})
+        # quit_queue.push({message: 'stop!'})
+        app.quit
       end
 
       message_received.should be_true
     end
 
     it "moves the message to an error queue if an exception is raised" do
+      pending "we will probably delete this test in favor of airbrake"
       queue.push({oh: 'noes'})
 
       app.run do |message|
-        quit_queue.push({message: 'halt thyself'})
+        # quit_queue.push({message: 'halt thyself'})
         raise "something went wrong"
       end
-
       queue.size.should == 0
       error_queue.size.should == 1
     end
   end
 
-  context 'when runner acknowledges one' do
+  context 'ACKONE: when runner acknowledges one' do
     let(:runner) { :ack_one }
 
     it_should_behave_like "app"
   end
 
-  context 'when runner acknowledges without a prefetch limit' do
+  context 'ACK: when runner acknowledges without a prefetch limit' do
     let(:runner) { :ack }
 
     it_should_behave_like 'app'
   end
 
-  context 'when runner does not acknowledge and has no limits' do
+  context 'GREEDY: when runner does not acknowledge and has no limits' do
     let(:runner) { :greedy }
 
     it_should_behave_like 'app'
   end
 
-  context 'when the runner pops without acknowledgment' do
+  context 'POP: when the runner pops without acknowledgment' do
     let(:runner) { :pop }
 
     it_should_behave_like "app"

@@ -11,13 +11,13 @@ module Superbolt
       end
 
       def subscribe
-        queue.subscribe(ack: ack) do |delivery_info, metadata, payload|
-
+        queue.subscribe(ack: ack, block: true) do |delivery_info, metadata, payload|
           message = Superbolt::IncomingMessage.new(delivery_info, payload, channel)
           processor = processor_class.new(message, logger, &block)
-          unless processor.perform
-            on_error(message.parse, processor.exception)
-          end
+          processor.perform
+          # unless processor.perform
+          #   on_error(message.parse, processor.exception)
+          # end
 
           message.ack if ack
         end

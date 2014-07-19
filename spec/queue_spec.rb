@@ -40,7 +40,7 @@ describe 'Superbolt::Queue' do
       it "returns the message but leaves it in the queue" do
         queue.push(message)
         queue.peek.should == decoded
-        queue.size.should == 1 
+        queue.size.should == 1
       end
     end
 
