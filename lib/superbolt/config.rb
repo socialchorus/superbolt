@@ -27,6 +27,10 @@ module Superbolt
       options[:runner]
     end
 
+    def error_notifier
+      options[:error_notifier]
+    end
+
     def env_params
       ENV[env_connection_key]
     end

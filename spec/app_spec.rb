@@ -62,6 +62,7 @@ describe Superbolt::App do
     it 'removes messages from the queue on successful completion' do
       queue.push({first: 1})
       queue.push({last: 2})
+      messages = []
 
       app.run do |message, logger|
         messages << message
@@ -94,16 +95,44 @@ describe Superbolt::App do
       message_received.should be_true
     end
 
-    it "moves the message to an error queue if an exception is raised" do
-      pending "we will probably delete this test in favor of airbrake"
-      queue.push({oh: 'noes'})
+    context 'notifying errors' do
+      let(:message) { { 'oh' => 'noes' } }
+      let(:the_error) { RuntimeError.new('something went wrong') }
 
-      app.run do |message|
-        # quit_queue.push({message: 'halt thyself'})
-        raise "something went wrong"
+      context 'airbrake' do
+        before { Superbolt.error_notifier = :airbrake }
+        after  { Superbolt.error_notifier = nil }
+
+        it 'uses ErrorNotifiers::Airbrake' do
+          app.error_notifier.should be_an_instance_of(Superbolt::ErrorNotifier::Airbrake)
+          app.error_notifier.should_receive(:error!).with(the_error, message)
+          messages = []
+
+          queue.push(message)
+          queue.push(message)
+
+          app.run do |message|
+            messages << message
+            messages.length > 1 ? app.quit : raise(the_error)
+          end
+        end
       end
-      queue.size.should == 0
-      error_queue.size.should == 1
+
+      context 'default' do
+        it 'does not fail' do
+          app.error_notifier.should be_an_instance_of(Superbolt::ErrorNotifier::None)
+          app.error_notifier.should_receive(:error!).with(the_error, message)
+          messages = []
+
+          queue.push(message)
+          queue.push(message)
+
+          app.run do |message|
+            messages << message
+            messages.length > 1 ? app.quit : raise(the_error)
+          end
+        end
+      end
     end
   end
 

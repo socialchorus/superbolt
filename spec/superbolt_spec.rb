@@ -6,20 +6,24 @@ describe Superbolt, 'the facade' do
       @config = nil
     end
   end
-    
+
   describe 'total configuration' do
     before do
       Superbolt.app_name = 'bossanova'
       Superbolt.env = 'production'
+      Superbolt.error_notifier = :airbrake
       Superbolt.config = {
         connection_key: 'SOME_RABBITMQ_URL'
       }
     end
 
+    after { Superbolt.error_notifier = nil }
+
     it "should retain the configuration information" do
       Superbolt.config.app_name.should == 'bossanova'
       Superbolt.config.env.should == 'production'
       Superbolt.config.env_connection_key.should == 'SOME_RABBITMQ_URL'
+      Superbolt.config.error_notifier.should == :airbrake
     end
   end
 

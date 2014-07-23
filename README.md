@@ -21,14 +21,14 @@ important: reading and sending messages.
 
 Superbolt has two main components: a queue and an app.
 
-The queue object acts like a queue. The queue can push, pop and peek. 
-The queue is able to spit out all or a subset of the messages on the 
+The queue object acts like a queue. The queue can push, pop and peek.
+The queue is able to spit out all or a subset of the messages on the
 queue. It can clear itself. In short it makes inline operations doable.
 
-The app on the other hand is an EventMachine process that takes over the
+The app on the other hand is long running process that takes over the
 thread. It continually reads from a single queue until it recieves a
-signal or message shutting it down. It is smart; it handles exceptions in message
-processing by moving those problem messages to a related error queue. It also
+signal shutting it down. It is smart; it is capable of sending exception
+notifications exceptions in message processing to Airbrake. It also
 listens on a separate quit queue for a graceful shutdown. A graceful
 shutdown means no messages are lost.
 
@@ -101,12 +101,12 @@ key that is used. Actual connection params that RabbitMQ Bunny/AMQP use
 can also be passed in as above. If a connection key is not found in the
 ENV, localhost will be used. If the application uses these typical
 conventions, then no connection configuration is required.
- 
+
 #### App Name
 
 The application name/identifier is an important default to setup in
 order to get all the goodness of related to messaging and its
-conventions. 
+conventions.
 
 If no app name is set up, a littlem or work is required to send a
 message:
@@ -133,7 +133,7 @@ filtering is easier for the consuming application.
 Superbolt doesn't want to developers worrying about exchanges,
 durability or connection ceremony. Developers should be able to just
 send a message. The ease of that sending depends on whether developers
-are sticking with the Superbolt conventions or not. 
+are sticking with the Superbolt conventions or not.
 
 #### The easiest way to message
 
@@ -154,7 +154,7 @@ This message can be received on a queue
       event: 'dorothy',
       arguments: 'On yellow brick road; has friends!'
     }
-  
+
 #### A more customizable messaging experience
 
 Messages can also be sent via Superbolt::Queue objects. In this case the
@@ -162,20 +162,20 @@ message can be anything and the queue name is exactly what is passed in.
 
     queue = Superbolt::Queue.new('dorothy')
     queue.push({demand: 'Surrender!'})
-    queue.pop 
+    queue.pop
     => {
       'demand' => 'Surrender!'
     }
 
 ### Reading messages
 
-Messages can be read inline or via a standalone app. 
+Messages can be read inline or via a standalone app.
 
 #### Reading Inline
 
 Reading messages inline is easy and to the point. The Superbolt::Queue
 object tries to act queue-like instead of like a hard to use external
-service. 
+service.
 
 Popping messages off the queue will remove the message from the queue
 immediately. If something goes wrong with eth message processing, it is
@@ -184,12 +184,12 @@ do.
 
     message = queue.pop # This removes the message permanently
 
-Messages can be read in non-destructive ways as well. 
+Messages can be read in non-destructive ways as well.
 
     message = queue.peek
     # Ponder or process message.
     # It is still hanging out at the top of the queue.
-    # It can be deleted with a pop, 
+    # It can be deleted with a pop,
     # provided another consumer hasn't already deleted it!
 
 Because of asynchronicity issues with job processing across several apps
@@ -202,7 +202,7 @@ and information gathering.
     queue.delete {|m| m['level'] == 'not_important' }
 
     # peek at messages in a certain range
-    queue.slice(2, 4) 
+    queue.slice(2, 4)
 
     # get a certain message, non-destructively
     queue[3]
@@ -218,22 +218,28 @@ communications.
     end
 
 Exceptions raised in the processing block will not exit
-the Superbolt app. Errors will be logged and the message will be put on
-an error queue with information about the exception raised. Those
-messages can be seen by accessing the related error queue:
-
-    error_queue = Superbolt::App.new('dorothy_inbox').error_queue
-    error_queue.all
-
-The error queue is a Superbolt::Queue and methods like #pop, #delete,
-and #[] are available to gather more data about the exceptions being
-raised.
+the Superbolt app. Errors will be logged and the notification will be sent
+to the error notifier (none by default, can be airbrake) with information
+about the exception raised.
 
 The app can be shutdown gracefully by sending a quit message to a
 special queue:
 
     quit_queue = Superbolt::App.new('dorothy_inbox').quit_queue
     quit_queue.push(message: 'for a deploy')
+
+## Error reporting
+
+  `Superbolt::App` can hook into Airbrake by your command:
+
+    Superbolt.error_notifier = :airbrake
+
+    Superbolt::App.new('dorothy_inbox') do
+      do_unsafe_stuff
+    end
+
+  Note that Superbolt does not have [the Airbrake gem](https://github.com/airbrake/airbrake)
+  amongst it's dependencies, so it is up to you to add it to your project.
 
 ## Installation
 
