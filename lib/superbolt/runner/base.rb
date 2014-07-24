@@ -1,11 +1,11 @@
 module Superbolt
   module Runner
     class Base
-      attr_reader :queue, :error_queue, :logger, :block
+      attr_reader :queue, :error_notifier, :logger, :block
 
-      def initialize(queue, error_queue, logger, block)
+      def initialize(queue, error_notifier, logger, block)
         @queue = queue
-        @error_queue = error_queue
+        @error_notifier = error_notifier
         @logger = logger
         @block = block
       end
@@ -15,13 +15,7 @@ module Superbolt
       end
 
       def on_error(message, error)
-        error_message = message.merge({error: {
-          class: error.class,
-          message: error.message,
-          backtrace: error.backtrace,
-          errored_at: Time.now
-        }})
-        error_queue.push(error_message)
+        error_notifier.error!(error, message)
       end
     end
   end

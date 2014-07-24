@@ -11,6 +11,9 @@ require 'active_support/inflector'
 require "superbolt/version"
 require "superbolt/config"
 
+require "superbolt/error_notifier/airbrake"
+require "superbolt/error_notifier/none"
+
 require "superbolt/adapter/base"
 require "superbolt/adapter/bunny"
 require "superbolt/adapter/amqp"

@@ -28,7 +28,7 @@ module PG
 end
 
 describe "Superbolt::Runner::Pg" do
-  let(:runner) { Superbolt::Runner::Pg.new('berkin', double('error', push: true), 'whatever', 'some block') }
+  let(:runner) { Superbolt::Runner::Pg.new('berkin', Superbolt::ErrorNotifier::None.new, 'whatever', 'some block') }
   let(:connection) { double('connection', reset!: true) }
 
   before do
