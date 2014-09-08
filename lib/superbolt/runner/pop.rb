@@ -1,17 +1,26 @@
 module Superbolt
   module Runner
-    class Pop < Base
-      attr_reader :message
+    class Pop < Default
+      def subscribe
+        queue.subscribe(ack: ack, block: true) do |delivery_info, metadata, payload|
+          message = Superbolt::IncomingMessage.new(delivery_info, payload, channel)
+          processor = processor_class.new(message, logger, &block)
+          success = processor.perform
 
-      def run
-        queue.subscribe(ack: false, block: true) do |delivery_info, metadata, payload|
-          @message = IncomingMessage.new(delivery_info, payload, channel)
-          processor = Processor.new(message, logger, &block)
-          unless processor.perform
-            on_error(message.parse, processor.exception) if message.parse
+          unless success
+            on_error(message.parse, processor.exception)
           end
-          @message = nil
+          message.ack if ack
+
         end
+      end
+
+      def ack
+        false
+      end
+
+      def prefetch
+        1
       end
     end
   end

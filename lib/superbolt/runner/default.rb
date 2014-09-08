@@ -19,8 +19,8 @@ module Superbolt
           unless success
             on_error(message.parse, processor.exception)
           end
-
           message.ack if ack
+
         end
       end
 
