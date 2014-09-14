@@ -19,18 +19,6 @@ describe Superbolt::IncomingMessage do
       it "parses it to a hash" do
         message.parse.should == {'some' => 'message'}
       end
-
-      context 'payload has a file' do
-        let(:payload) { { 'arguments' => {'some_file' => {'file_hash' => 'yup'}} }.to_json } 
-        let(:packer) { double('packer', perform: {'some_file' => 'some_file'} ) }
-        
-        it "uses FilePacker to rewrite files into a hash" do
-          Superbolt::FileUnpacker.should_receive(:new)
-            .with({'some_file' => {'file_hash' => 'yup'}})
-            .and_return(packer)
-          message.parse.should == {'arguments' => packer.perform}
-        end
-      end
     end
   end
 

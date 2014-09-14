@@ -9,11 +9,6 @@ module Superbolt
         connection.close(&block)
         @connection = nil
         @q = nil
-        @qq = nil
-      end
-
-      def qq
-        @qq ||= connection.queue("#{name}.quit", self.class.default_options)
       end
     end
   end

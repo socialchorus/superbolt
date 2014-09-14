@@ -18,7 +18,7 @@ describe Superbolt::Config do
     }
 
     it "should make the app name available" do
-      config.app_name.should == 'my_great_app'
+      expect(config.app_name).to eq 'my_great_app'
     end
 
     it "should make the env available" do

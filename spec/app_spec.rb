@@ -13,33 +13,17 @@ describe Superbolt::App do
   let(:name)        { 'superbolt' }
   let(:logger)      { Logger.new('/dev/null') }
   let(:queue)       { Superbolt::Queue.new("#{name}_#{env}") }
-  let(:quit_queue)  { Superbolt::Queue.new("#{name}_#{env}.quit") }
-  let(:error_queue) { Superbolt::Queue.new("#{name}_#{env}.error") }
   let(:messages)    { [] }
 
   before do
     queue.clear
-    quit_queue.clear
-    error_queue.clear
   end
 
   after do
     queue.clear
-    quit_queue.clear
-    error_queue.clear
   end
 
   shared_examples 'app' do
-    # it "shuts down with any message to the quit queue" do
-    #   queue.push({please: 'stop'})
-    #   app.run do |arguments|
-    #     quit_queue.push({message: 'just because'})
-    #   end
-
-    #   queue.size.should == 0
-    #   quit_queue.size.should == 0
-    # end
-
     it 'passes messages to the block for processing' do
       queue.push({first: 1})
       queue.push({last: 2})
@@ -88,11 +72,10 @@ describe Superbolt::App do
 
       app.run do |message, logger|
         logger.info(message)
-        # quit_queue.push({message: 'stop!'})
         app.quit
       end
 
-      message_received.should be_true
+      message_received.should eq true
     end
 
     context 'notifying errors' do

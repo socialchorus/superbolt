@@ -1,6 +1,5 @@
 require 'json'
 
-require 'file_marshal'
 require 'bunny'
 require 'amqp'
 require 'eventmachine'
@@ -36,9 +35,6 @@ require "superbolt/app"
 require "superbolt/processor"
 require "superbolt/facade"
 require "superbolt/messenger"
-require "superbolt/file_manager"
-require "superbolt/file_unpacker"
-require "superbolt/file_packer"
 
 require "superbolt/spec_helpers"
 

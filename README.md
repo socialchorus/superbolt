@@ -222,12 +222,6 @@ the Superbolt app. Errors will be logged and the notification will be sent
 to the error notifier (none by default, can be airbrake) with information
 about the exception raised.
 
-The app can be shutdown gracefully by sending a quit message to a
-special queue:
-
-    quit_queue = Superbolt::App.new('dorothy_inbox').quit_queue
-    quit_queue.push(message: 'for a deploy')
-
 ## Error reporting
 
   `Superbolt::App` can hook into Airbrake by your command:

@@ -15,9 +15,9 @@ describe 'Superbolt::Queue' do
   end
 
   it "is setup with the right defaults" do
-    queue.exclusive?.should be_false
-    queue.durable?.should be_true
-    queue.auto_delete?.should be_false
+    queue.exclusive?.should eq false
+    queue.durable?.should eq true
+    queue.auto_delete?.should eq false
   end
 
   describe 'queue/array operations' do

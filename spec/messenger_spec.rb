@@ -51,17 +51,12 @@ describe Superbolt::Messenger do
         messenger.re('zap')
         message[:event].should == 'zap'
       end
-
-      it "passes data to the message" do
-        messenger.data({foo: 'bar'})
-        message[:arguments].should == {foo: 'bar'}
-      end
     end
 
     context 'reading' do
       it '#to returns the name' do
         messenger.to('transducer')
-        messenger.to.should == 'transducer'
+        expect(messenger.to).to eq 'transducer'
       end
 
       it '#from returns the origin' do
@@ -82,8 +77,6 @@ describe Superbolt::Messenger do
   end
 
   describe 'send!' do
-    let(:image_file) { File.open(File.dirname(__FILE__) + '/support/commodore.jpg')}
-    
     before do
       messenger
         .to(name)
@@ -98,15 +91,6 @@ describe Superbolt::Messenger do
         'event' => 'love',
         'arguments' => 'none'
       }
-    end
-
-    it "converts any values that have key ending in '_file' with FileMarshal" do
-      messenger.send!({
-        image_file: image_file
-      })
-
-      message = queue.pop
-      message['arguments']['image_file'].should be_a(Tempfile)
     end
   end
 end

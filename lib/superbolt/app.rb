@@ -16,11 +16,6 @@ module Superbolt
       env ? "#{@name}_#{env}" : @name
     end
 
-    # just in case you have a handle to the app and want to quit it
-    def quit_queue
-      Queue.new("#{connection.name}.quit", connection.config)
-    end
-
     def connection
       @connection ||= Connection::Queue.new(name, config)
     end
@@ -33,15 +28,8 @@ module Superbolt
       connection.q
     end
 
-    def quit_subscriber_queue
-      connection.qq
-    end
-
     def run(&block)
       runner_class.new(queue, error_notifier, logger, block).run
-      # quit_subscriber_queue.subscribe do |message|
-      #    (message)
-      # end
     end
 
     def runner_class
