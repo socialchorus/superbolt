@@ -1,3 +1,4 @@
+require 'airbrake'
 module Superbolt
   class Messenger
     attr_accessor :origin, :name, :event, :arguments, :env
@@ -47,7 +48,11 @@ module Superbolt
 
     def send!(args=nil)
       self.arguments = args if args
-      queue.push(message)
+      begin
+        queue.push(message)
+      rescue Bunny::TCPConnectionFailedForAllHosts => e
+        Airbrake.notify(e)
+      end
     end
 
     def queue
