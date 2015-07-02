@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Superbolt::IncomingMessage do
   let(:message){ Superbolt::IncomingMessage.new(delivery_info, payload, channel) }

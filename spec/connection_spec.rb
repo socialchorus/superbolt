@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Superbolt::Adapter::Bunny do
   let(:connection) { Superbolt::Adapter::Bunny.new }
@@ -15,7 +15,7 @@ describe Superbolt::Adapter::Bunny do
 
   it "delegates queue creation to the channel" do
     queue = connection.queue('changelica')
-    queue.should be_a Bunny::Queue
+    expect(queue).to be_a Bunny::Queue
     expect(connection.queues.keys).to include('changelica')
   end
 end

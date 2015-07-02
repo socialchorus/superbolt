@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Superbolt::Messenger do
   let(:env) { 'test' }
@@ -28,7 +28,7 @@ describe Superbolt::Messenger do
     it "raises an error if the name is nil" do
       expect {
         messenger.queue
-      }.to raise_error
+      }.to raise_error(RuntimeError)
     end
   end
 

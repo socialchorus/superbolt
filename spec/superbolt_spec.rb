@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Superbolt, 'the facade' do
   before do
@@ -44,7 +44,7 @@ describe Superbolt, 'the facade' do
   describe '.queue' do
     it "creates a queue with the default config" do
       queue = double('queue')
-      Superbolt::Queue.should_receive(:new)
+      expect(Superbolt::Queue).to receive(:new)
         .with('queue_name', Superbolt.config)
         .and_return(queue)
       expect(Superbolt.queue('queue_name')).to eq(queue)

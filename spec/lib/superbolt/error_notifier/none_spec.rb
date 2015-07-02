@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Superbolt::ErrorNotifier::None do
   subject(:notifier) { described_class.new(double(:Logger)) }
