@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Superbolt::App do
   let(:app) {
@@ -62,7 +62,7 @@ describe Superbolt::App do
       app.logger = mock_logger
 
       message_received = false
-      mock_logger.stub(:info) do |m|
+      allow(mock_logger).to receive(:info) do |m|
         if m == {'write' => 'out'}
           message_received = true
         end

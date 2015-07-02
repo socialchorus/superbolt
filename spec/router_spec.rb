@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Superbolt::Router do
   let(:router) { Superbolt::Router.new(message, logger) }

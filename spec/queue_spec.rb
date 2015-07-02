@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe 'Superbolt::Queue' do
   let(:name) { 'superbolt_test' }
@@ -119,7 +119,7 @@ describe 'Superbolt::Queue' do
 
       it "returns all messages where the block is true" do
         messages = queue.delete{|json| json['i'] > 2 && json['i'] != 6 && json['i'] < 8 }
-        messages.map{|json| json['i']}.should == [3,4,5,7]
+        expect(messages.map{|json| json['i']}).to eq([3,4,5,7])
       end
 
       it "removes those messages from the queue" do
