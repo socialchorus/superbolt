@@ -18,11 +18,11 @@ describe Superbolt::Config do
     }
 
     it "should make the app name available" do
-      expect(config.app_name).to eq 'my_great_app'
+      expect(config.app_name).to eq('my_great_app')
     end
 
     it "should make the env available" do
-      config.env.should == 'staging'
+      expect(config.env).to eq('staging')
     end
   end
 
@@ -42,7 +42,7 @@ describe Superbolt::Config do
         end
 
         it "returns the RABBITMQ_URL" do
-          config.connection_params.should == url
+          expect(config.connection_params).to eq(url)
         end
       end
 
@@ -65,7 +65,7 @@ describe Superbolt::Config do
         end
 
         it "returns the url specified in the env" do
-          config.connection_params.should == url
+          expect(config.connection_params).to eq(url)
         end
       end
     end
@@ -73,9 +73,9 @@ describe Superbolt::Config do
     context 'no environmental variables' do
       context 'default' do
         it "uses the default url" do
-          config.connection_params.should == {
+          expect(config.connection_params).to eq({
             :host => '127.0.0.1'
-          }
+          })
         end
       end
 
@@ -89,7 +89,7 @@ describe Superbolt::Config do
         }
 
         it "uses what it is given" do
-          config.connection_params.should == options[:connection_params]
+          expect(config.connection_params).to eq(options[:connection_params])
         end
       end
     end

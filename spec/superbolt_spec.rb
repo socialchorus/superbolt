@@ -20,16 +20,16 @@ describe Superbolt, 'the facade' do
     after { Superbolt.error_notifier = nil }
 
     it "should retain the configuration information" do
-      Superbolt.config.app_name.should == 'bossanova'
-      Superbolt.config.env.should == 'production'
-      Superbolt.config.env_connection_key.should == 'SOME_RABBITMQ_URL'
-      Superbolt.config.error_notifier.should == :airbrake
+      expect(Superbolt.config.app_name).to eq('bossanova')
+      expect(Superbolt.config.env).to eq('production')
+      expect(Superbolt.config.env_connection_key).to eq('SOME_RABBITMQ_URL')
+      expect(Superbolt.config.error_notifier).to eq(:airbrake)
     end
   end
 
   describe '.config' do
     it "has a default" do
-      Superbolt.config.should == Superbolt::Config.new({})
+      expect(Superbolt.config).to eq(Superbolt::Config.new({}))
     end
 
     it "can be customized" do
@@ -37,7 +37,7 @@ describe Superbolt, 'the facade' do
         connection_key: 'SOME_RABBITMQ_URL'
       }
 
-      Superbolt.config.env_connection_key.should == 'SOME_RABBITMQ_URL'
+      expect(Superbolt.config.env_connection_key).to eq('SOME_RABBITMQ_URL')
     end
   end
 
@@ -47,7 +47,7 @@ describe Superbolt, 'the facade' do
       Superbolt::Queue.should_receive(:new)
         .with('queue_name', Superbolt.config)
         .and_return(queue)
-      Superbolt.queue('queue_name').should == queue
+      expect(Superbolt.queue('queue_name')).to eq(queue)
     end
   end
 
@@ -63,13 +63,13 @@ describe Superbolt, 'the facade' do
         .re('update')
         .send!({class: 'Advocate'})
 
-      queue.pop.should == {
+      expect(queue.pop).to eq({
         'origin' => 'bossanova',
         'event' => 'update',
         'arguments' => {
           'class' => 'Advocate'
         }
-      }
+      })
     end
   end
 end

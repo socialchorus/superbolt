@@ -11,13 +11,13 @@ describe 'Superbolt::Queue' do
   end
 
   it "has the right name" do
-    queue.name.should == name
+    expect(queue.name).to eq(name)
   end
 
   it "is setup with the right defaults" do
-    queue.exclusive?.should eq false
-    queue.durable?.should eq true
-    queue.auto_delete?.should eq false
+    expect(queue.exclusive?).to eq(false)
+    expect(queue.durable?).to eq(true)
+    expect(queue.auto_delete?).to eq(false)
   end
 
   describe 'queue/array operations' do
@@ -32,31 +32,31 @@ describe 'Superbolt::Queue' do
 
       it "writes to the queue" do
         queue.push(message)
-        queue.size.should == 1
+        expect(queue.size).to eq(1)
       end
     end
 
     describe '#peek' do
       it "returns the message but leaves it in the queue" do
         queue.push(message)
-        queue.peek.should == decoded
-        queue.size.should == 1
+        expect(queue.peek).to eq(decoded)
+        expect(queue.size).to eq(1)
       end
     end
 
     describe '#pop' do
       it "returns the message and deletes it from the queue" do
         queue.push(message)
-        queue.pop.should == decoded
-        queue.size.should == 0
+        expect(queue.pop).to eq(decoded)
+        expect(queue.size).to eq(0)
       end
 
       it "leaves all other messages in the queue" do
         queue.push(message)
         queue.push(message_two)
         queue.pop
-        queue.size.should == 1
-        queue.all.should include(decoded_two)
+        expect(queue.size).to eq(1)
+        expect(queue.all).to include(decoded_two)
       end
     end
 
@@ -69,12 +69,12 @@ describe 'Superbolt::Queue' do
 
       it "returns all the messages on the queue" do
         messages = queue.all
-        messages.size.should == 3
-        messages.uniq.should == [decoded]
+        expect(messages.size).to eq(3)
+        expect(messages.uniq).to eq([decoded])
       end
 
       it "does not consume the messages" do
-        queue.size.should == 3
+        expect(queue.size).to eq(3)
       end
     end
 
@@ -87,13 +87,13 @@ describe 'Superbolt::Queue' do
 
       it "returns a set of messages determined by the offset and the number requested" do
         messages = queue.slice(1,3)
-        messages.size.should == 3
-        messages.map{|json| json['i']}.should == [1,2,3]
+        expect(messages.size).to eq(3)
+        expect(messages.map{|json| json['i']}).to eq([1,2,3])
       end
 
       it "does not consume messages" do
         queue.slice(1,3)
-        queue.size.should == 10
+        expect(queue.size).to eq(10)
       end
     end
 
@@ -106,7 +106,7 @@ describe 'Superbolt::Queue' do
 
       it "return the message at the i-th position without removing it from the queue" do
         json = queue[3]
-        json['i'].should == 3
+        expect(json['i']).to eq(3)
       end
     end
 
@@ -124,7 +124,7 @@ describe 'Superbolt::Queue' do
 
       it "removes those messages from the queue" do
         queue.delete{|json| json['i'] > 2 && json['i'] != 6 && json['i'] < 8 }
-        queue.size.should == 6
+        expect(queue.size).to eq(6)
       end
     end
   end
@@ -138,7 +138,7 @@ describe 'Superbolt::Queue' do
 
     it "should store messages to a queue, even when writing before declaring the queue" do
       new_queue.push({my: 'message'})
-      new_queue.size.should == 1
+      expect(new_queue.size).to eq(1)
     end
   end
 end

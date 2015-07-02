@@ -26,8 +26,8 @@ describe Superbolt::Router do
     }
 
     it "performs the event handler" do
-      MessageHandler.should_receive(:new).with({yes: 'we can'}, logger).and_return(handler)
-      handler.should_receive(:perform)
+      expect(MessageHandler).to receive(:new).with({yes: 'we can'}, logger).and_return(handler)
+      expect(handler).to receive(:perform)
 
       router.perform
     end
@@ -44,7 +44,7 @@ describe Superbolt::Router do
     }
 
     it "logs a warning" do
-      logger.should_receive(:warn).with("No Superbolt route for event: 'no_one_home'")
+      expect(logger).to receive(:warn).with("No Superbolt route for event: 'no_one_home'")
 
       router.perform
     end

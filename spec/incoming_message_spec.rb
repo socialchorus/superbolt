@@ -11,26 +11,26 @@ describe Superbolt::IncomingMessage do
       let(:payload) { 'foo' }
 
       it 'just returns the payload' do
-        message.parse.should == payload
+        expect(message.parse).to eq(payload)
       end
     end
 
     context 'payload is json' do
       it "parses it to a hash" do
-        message.parse.should == {'some' => 'message'}
+        expect(message.parse).to eq({'some' => 'message'})
       end
     end
   end
 
   describe '#reject' do
     it "calls reject on the channel with the appropritate data and options" do
-      channel.should_receive(:reject).with('tag', true)
+      expect(channel).to receive(:reject).with('tag', true)
 
       message.reject
     end
 
     it "can reject without requeuing" do
-      channel.should_receive(:reject).with('tag', false)
+      expect(channel).to receive(:reject).with('tag', false)
 
       message.reject(false)
     end
@@ -38,7 +38,7 @@ describe Superbolt::IncomingMessage do
 
   describe "#ack" do
     it "calls acknowledge on the channel" do
-      channel.should_receive(:acknowledge).with('tag')
+      expect(channel).to receive(:acknowledge).with('tag')
 
       message.ack
     end
