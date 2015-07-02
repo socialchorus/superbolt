@@ -4,18 +4,18 @@ describe Superbolt::Adapter::Bunny do
   let(:connection) { Superbolt::Adapter::Bunny.new }
 
   it "has an underlying open connection via Bunny" do
-    connection.socket.should be_a Bunny::Session
-    connection.socket.should be_open
-    connection.should be_open
+    expect(connection.socket).to be_a Bunny::Session
+    expect(connection.socket).to be_open
+    expect(connection).to be_open
   end
 
   it "has a channel" do
-    connection.channel.should be_a Bunny::Channel
+    expect(connection.channel).to be_a Bunny::Channel
   end
 
   it "delegates queue creation to the channel" do
     queue = connection.queue('changelica')
     queue.should be_a Bunny::Queue
-    connection.queues.keys.should include('changelica')
+    expect(connection.queues.keys).to include('changelica')
   end
 end

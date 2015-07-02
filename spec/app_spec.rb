@@ -36,11 +36,11 @@ describe Superbolt::App do
         end
       end
 
-      messages.size.should == 2
-      messages.should == [
+      expect(messages.size).to eq(2)
+      expect(messages).to eq([
         {'first' => 1},
         {'last' => 2}
-      ]
+      ])
     end
 
     it 'removes messages from the queue on successful completion' do
@@ -54,7 +54,7 @@ describe Superbolt::App do
           app.quit
         end
       end
-      queue.size.should == 0
+      expect(queue.size).to eq(0)
     end
 
     it "passes a logger to the block" do
@@ -75,7 +75,7 @@ describe Superbolt::App do
         app.quit
       end
 
-      message_received.should eq true
+      expect(message_received).to eq(true)
     end
 
     context 'notifying errors' do
@@ -87,8 +87,8 @@ describe Superbolt::App do
         after  { Superbolt.error_notifier = nil }
 
         it 'uses ErrorNotifiers::Airbrake' do
-          app.error_notifier.should be_an_instance_of(Superbolt::ErrorNotifier::Airbrake)
-          app.error_notifier.should_receive(:error!).with(the_error, message)
+          expect(app.error_notifier).to be_an_instance_of(Superbolt::ErrorNotifier::Airbrake)
+          expect(app.error_notifier).to receive(:error!).with(the_error, message)
           messages = []
 
           queue.push(message)
@@ -103,8 +103,8 @@ describe Superbolt::App do
 
       context 'default' do
         it 'does not fail' do
-          app.error_notifier.should be_an_instance_of(Superbolt::ErrorNotifier::None)
-          app.error_notifier.should_receive(:error!).with(the_error, message)
+          expect(app.error_notifier).to be_an_instance_of(Superbolt::ErrorNotifier::None)
+          expect(app.error_notifier).to receive(:error!).with(the_error, message)
           messages = []
 
           queue.push(message)

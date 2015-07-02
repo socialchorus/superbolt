@@ -16,13 +16,13 @@ describe Superbolt::Messenger do
   describe 'queue generation' do
     it "can be instantiated with a queue destination" do
       m = Superbolt::Messenger.new(to: name)
-      m.name.should == name
-      m.queue.name.should == "#{name}_#{env}"
+      expect(m.name).to eq(name)
+      expect(m.queue.name).to eq("#{name}_#{env}")
     end
 
     it "destination queue can be set via #from" do
       messenger.to('activator')
-      messenger.queue.name.should == "activator_#{env}"
+      expect(messenger.queue.name).to eq("activator_#{env}")
     end
 
     it "raises an error if the name is nil" do
@@ -37,41 +37,41 @@ describe Superbolt::Messenger do
 
     context 'writing' do
       it "starts its life with no interesting values" do
-        message[:origin].should == nil
-        message[:event].should == 'default'
-        message[:arguments].should == {}
+        expect(message[:origin]).to eq(nil)
+        expect(message[:event]).to eq('default')
+        expect(message[:arguments]).to eq({})
       end
 
       it "calls to #from, set the origin on the message" do
         messenger.from('linkticounter')
-        message[:origin].should == 'linkticounter'
+        expect(message[:origin]).to eq('linkticounter')
       end
 
       it "passes event data to the message" do
         messenger.re('zap')
-        message[:event].should == 'zap'
+        expect(message[:event]).to eq('zap')
       end
     end
 
     context 'reading' do
       it '#to returns the name' do
         messenger.to('transducer')
-        expect(messenger.to).to eq 'transducer'
+        expect(messenger.to).to eq('transducer')
       end
 
       it '#from returns the origin' do
         messenger.from('activator')
-        messenger.from.should == 'activator'
+        expect(messenger.from).to eq('activator')
       end
 
       it '#re returns the event' do
         messenger.re('save')
-        messenger.re.should == 'save'
+        expect(messenger.re).to eq('save')
       end
 
       it '#data return the arguments' do
         messenger.data({foo: 'bar'})
-        messenger.data.should == {foo: 'bar'}
+        expect(messenger.data).to eq({foo: 'bar'})
       end
     end
   end
@@ -86,11 +86,11 @@ describe Superbolt::Messenger do
 
     it "returns a hash that gets sent to the right queue" do
       messenger.send!('none')
-      queue.pop.should == {
+      expect(queue.pop).to eq({
         'origin' => 'me',
         'event' => 'love',
         'arguments' => 'none'
-      }
+      })
     end
   end
 end
