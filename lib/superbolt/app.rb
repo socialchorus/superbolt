@@ -6,7 +6,7 @@ module Superbolt
     def initialize(name, options={})
       @name                = name
       @env                 = options[:env] || Superbolt.env
-      @logger              = options[:logger] || Logger.new($stdout)
+      @logger              = options[:logger] || LogStashLogger.new(type: :stdout)
       @config              = options[:config] || Superbolt.config
       @runner_type         = options[:runner] || config.runner || :default
       @error_notifier_type = options[:error_notifier] || Superbolt.error_notifier

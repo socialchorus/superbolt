@@ -6,7 +6,7 @@ task :superbolt => :environment do
       Superbolt::Router.new(message, logger).perform
     end
   # Rescue SignalException so that we don't spam error handlers like Airbrake
-  # with SIGTERM errors every time a task is killed (Heroku dyno restarts, etc.)
+  # with SIGTERM errors every time a task is killed (machine restarts, etc.)
   rescue SignalException => e
     Rails.logger.info(e.message)
   end
