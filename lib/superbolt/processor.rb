@@ -27,7 +27,7 @@ module Superbolt
 
     def finish!
       end_time = Time.now
-      logger.info "[#{end_time}] Finished message: #{message.parse}\n  in #{start_time - end_time} seconds"
+      logger.info "[#{end_time}] Finished message: #{message.parse} in #{end_time - start_time} seconds"
     end
   end
 end
