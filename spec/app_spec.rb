@@ -101,6 +101,15 @@ describe Superbolt::App do
         end
       end
 
+      context 'rollbar' do
+        before { Superbolt.error_notifier = :rollbar }
+        after  { Superbolt.error_notifier = nil }
+
+        it 'uses ErrorNotifiers::Rollbar' do
+          expect(app.error_notifier).to be_an_instance_of(Superbolt::ErrorNotifier::Rollbar)
+        end
+      end
+
       context 'default' do
         it 'does not fail' do
           expect(app.error_notifier).to be_an_instance_of(Superbolt::ErrorNotifier::None)

@@ -12,6 +12,7 @@ require "superbolt/version"
 require "superbolt/config"
 
 require "superbolt/error_notifier/airbrake"
+require "superbolt/error_notifier/rollbar"
 require "superbolt/error_notifier/none"
 
 require "superbolt/adapter/base"
