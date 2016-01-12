@@ -28,7 +28,7 @@ queue. It can clear itself. In short it makes inline operations doable.
 The app on the other hand is long running process that takes over the
 thread. It continually reads from a single queue until it recieves a
 signal shutting it down. It is smart; it is capable of sending exception
-notifications exceptions in message processing to Airbrake. It also
+notifications exceptions in message processing to Airbrake or Rollbar. It also
 listens on a separate quit queue for a graceful shutdown. A graceful
 shutdown means no messages are lost.
 
@@ -219,12 +219,12 @@ communications.
 
 Exceptions raised in the processing block will not exit
 the Superbolt app. Errors will be logged and the notification will be sent
-to the error notifier (none by default, can be airbrake) with information
-about the exception raised.
+to the error notifier (none by default, can be airbrake or rollbar) with
+information about the exception raised.
 
 ## Error reporting
 
-  `Superbolt::App` can hook into Airbrake by your command:
+  `Superbolt::App` can hook into Airbrake (or Rollbar) by your command:
 
     Superbolt.error_notifier = :airbrake
 
@@ -232,8 +232,9 @@ about the exception raised.
       do_unsafe_stuff
     end
 
-  Note that Superbolt does not have [the Airbrake gem](https://github.com/airbrake/airbrake)
-  amongst it's dependencies, so it is up to you to add it to your project.
+  Note that Superbolt does not have the [Airbrake](https://github.com/airbrake/airbrake)
+  nor the [Rollbar](https://github.com/rollbar/rollbar-gem) gem amongst it's dependencies,
+  so it is up to you to add it to your project.
 
 ## Installation
 

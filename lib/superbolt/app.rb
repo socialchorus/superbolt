@@ -61,7 +61,8 @@ module Superbolt
     def error_notifier_map
       {
         airbrake: ErrorNotifier::Airbrake,
-        none:     ErrorNotifier::None
+        rollbar: ErrorNotifier::Rollbar,
+        none: ErrorNotifier::None
       }
     end
 
