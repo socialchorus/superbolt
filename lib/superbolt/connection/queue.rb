@@ -14,6 +14,7 @@ module Superbolt
 
       def closing(&block)
         response = block.call
+      ensure
         close
         response
       end
