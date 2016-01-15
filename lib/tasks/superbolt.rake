@@ -11,9 +11,9 @@ task :superbolt => :environment do
     Superbolt::App.new(Superbolt.app_name, {}).run do |message, logger|
       begin
         Superbolt::Router.new(message, logger).perform
-        statsd.increment("app.#{Superbolt.app_name}.messages.#{message["event"]}.success") if statsd
+        statsd.increment("superbolt.#{Superbolt.app_name}.messages.#{message["event"]}.success") if statsd
       rescue => e
-        statsd.increment("app.#{Superbolt.app_name}.messages.#{message["event"]}.error") if statsd
+        statsd.increment("superbolt.#{Superbolt.app_name}.messages.#{message["event"]}.error") if statsd
         raise e
       end
     end
