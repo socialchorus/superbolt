@@ -35,6 +35,14 @@ module Superbolt
       ENV[env_connection_key]
     end
 
+    def statsd_host
+      options[:statsd_host]
+    end
+
+    def statsd_port
+      options[:statsd_port]
+    end
+
     def default
       options[:connection_params] || {host: '127.0.0.1'}
     end
