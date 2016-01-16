@@ -1,8 +1,8 @@
 # assumes an environment task that sets up your app environment
 desc "worker that reads the queue and sends messages through the router as configured"
 task :superbolt => :environment do
-  statsd = if defined?(::Statsd) && Superbolt.statsd_host && Superbolt.statsd_port
-    ::Statsd.new(Superbolt.statsd_host, Superbolt.statsd_port)
+  statsd = if defined?(::Statsd) && Superbolt.config.statsd_host && Superbolt.config.statsd_port
+    ::Statsd.new(Superbolt.config.statsd_host, Superbolt.config.statsd_port)
   else
     nil
   end
