@@ -28,8 +28,7 @@ queue. It can clear itself. In short it makes inline operations doable.
 The app on the other hand is long running process that takes over the
 thread. It continually reads from a single queue until it recieves a
 signal shutting it down. It is smart; it is capable of sending exception
-notifications exceptions in message processing to Airbrake or Rollbar. It
-is also capable of posting simple success|abort|error metrics to Statsd.
+notifications exceptions in message processing to Airbrake or Rollbar.
 It also listens on a separate quit queue for a graceful shutdown. A graceful
 shutdown means no messages are lost.
 
