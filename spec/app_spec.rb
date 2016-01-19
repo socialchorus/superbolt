@@ -5,8 +5,6 @@ describe Superbolt::App do
     Superbolt::App.new(name, {
       env: env,
       logger: logger,
-      statsd_host: statsd_host,
-      statsd_port: statsd_port,
       config: double('config', runner: runner, connection_params: true)
     })
   }
@@ -16,8 +14,6 @@ describe Superbolt::App do
   let(:logger)      { Logger.new('/dev/null') }
   let(:queue)       { Superbolt::Queue.new("#{name}_#{env}") }
   let(:messages)    { [] }
-  let(:statsd_host) { "example.com" }
-  let(:statsd_port) { 1234 }
 
   before do
     queue.clear
@@ -111,18 +107,6 @@ describe Superbolt::App do
 
         it 'uses ErrorNotifiers::Rollbar' do
           expect(app.error_notifier).to be_an_instance_of(Superbolt::ErrorNotifier::Rollbar)
-        end
-      end
-
-      context 'statsd_host' do
-        it 'uses value from config' do
-          expect(app.statsd_host).to eq(statsd_host)
-        end
-      end
-
-      context 'statsd_port' do
-        it 'uses value from config' do
-          expect(app.statsd_port).to eq(statsd_port)
         end
       end
 
