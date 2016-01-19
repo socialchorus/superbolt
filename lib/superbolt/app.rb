@@ -1,6 +1,6 @@
 module Superbolt
   class App
-    attr_reader :config, :env, :runner_type, :error_notifier_type, :statsd_host, :statsd_port
+    attr_reader :config, :env, :runner_type, :error_notifier_type
     attr_accessor :logger
 
     def initialize(name, options={})
@@ -10,8 +10,6 @@ module Superbolt
       @config              = options[:config] || Superbolt.config
       @runner_type         = options[:runner] || config.runner || :default
       @error_notifier_type = options[:error_notifier] || Superbolt.error_notifier
-      @statsd_host         = options[:statsd_host]
-      @statsd_port         = options[:statsd_port]
     end
 
     def name

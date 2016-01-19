@@ -26,28 +26,6 @@ describe Superbolt::Config do
     end
   end
 
-  describe '#statsd_host' do
-    let(:options) {
-      {
-        statsd_host: "localhost"
-      }
-    }
-    it "should make the statsd_host available" do
-      expect(config.statsd_host).to eq('localhost')
-    end
-  end
-
-  describe '#statsd_port' do
-    let(:options) {
-      {
-        statsd_port: 8125
-      }
-    }
-    it "should make the statsd_port available" do
-      expect(config.statsd_port).to eq(8125)
-    end
-  end
-
   describe '#connection' do
     context "environmental variables" do
       context 'default behavior' do
