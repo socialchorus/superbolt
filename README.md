@@ -14,7 +14,7 @@ like a queue. There is great ceremony in the process. In fact, it is
 quite easy to pass in the wrong queue arguments, or leave a connection
 open.
 
-Superbolt takes the ceremony away and let's developers focus on what is
+Superbolt takes the ceremony away and lets developers focus on what is
 important: reading and sending messages.
 
 #### How does it make it easier?
@@ -65,7 +65,7 @@ A Superbolt message has three keys:
    default.
 3. arguments: additional data to be passed on to the handling process
 
-Developer's can create a message without having to think to much about
+Developers can create a message without having to think to much about
 these concerns:
 
     Superbolt.app_name = 'me'
@@ -257,7 +257,7 @@ Or install it yourself as:
   in a failure loop.
 * In code YARD stye documentation
 * CodeClimate
-* TravisCI continuout integration
+* TravisCI continuous integration
 
 
 ## Contributing
